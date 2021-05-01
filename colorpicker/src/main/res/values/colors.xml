@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+Copyright 2020 Mrudul Tora <mrudultora@gmail.com>
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+   https://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<resources>
+
+    <!-- Default colors for array -->
+    <color name="color1">#f44236</color>
+    <color name="color2">#ea1e63</color>
+    <color name="color3">#9a28b1</color>
+    <color name="color4">#683ab7</color>
+    <color name="color5">#2F4FE3</color>
+    <color name="color6">#2295f0</color>
+    <color name="color7">#04a8f5</color>
+    <color name="color8">#00bed2</color>
+    <color name="color9">#009788</color>
+    <color name="color10">#4cb050</color>
+    <color name="color11">#ff9700</color>
+    <color name="color12">#FFC000</color>
+    <color name="color13">#D2E41D</color>
+    <color name="color14">#fe5722</color>
+    <color name="color15">#795547</color>
+
+</resources>
