@@ -18,7 +18,8 @@ limitations under the License.
 
 <resources>
 
-    <!-- Default colors for array -->
+    <!-- Default colors for array in the night mode. These are created separately due
+         to system wide color inversion in Xiaomi phones -->
     <color name="color1">#f44236</color>
     <color name="color2">#ea1e63</color>
     <color name="color3">#9a28b1</color>
@@ -36,6 +37,6 @@ limitations under the License.
     <color name="color15">#795547</color>
 
     <!-- BottomSheet Divider Color -->
-    <color name="dividerColor">#B5A9A9</color>
+    <color name="dividerColor">#484545</color>
 
 </resources>

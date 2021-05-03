@@ -18,13 +18,9 @@ package com.mrudultora.colorpicker;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
-import android.graphics.BlendMode;
-import android.graphics.BlendModeColorFilter;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
-import android.util.TypedValue;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +33,12 @@ import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.core.widget.ImageViewCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.mrudultora.colorpicker.listeners.OnColorItemClickListener;
+import com.mrudultora.colorpicker.util.ColorItemShape;
+import com.mrudultora.colorpicker.util.ColorUtil;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * @author Mrudul Tora (mrudultora@gmail.com)
@@ -46,6 +47,7 @@ import java.util.ArrayList;
 public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.ViewHolder> {
 
     final ArrayList<ColorPaletteItemModel> colorsList;
+    private HashMap<Integer, Integer> colorItems;
     private final Context context;
     private int colorPosition = -1;              // would be used if none of the color is selected and there is an default color.
     private ColorItemShape colorItemShape;       // default is square.
@@ -54,6 +56,7 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.ViewHolder> 
     private final OnColorItemClickListener onColorItemClickListener;
     private boolean cardSizeChanged = false;
     private boolean tickSizeChanged = false;
+    private boolean multiTickColor = false;
     private float tickSizeDimen = 0f;                   // when equals 0 (default used would be 24dp)
     private float cardViewDimen = 0f;                 // when equals 0 (default used would be 45dp)
 
@@ -94,7 +97,7 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.ViewHolder> 
             holder.itemCheckImageView.setVisibility(View.GONE);
         }
 
-        if (tickMarkColor != -1) {
+        if (tickMarkColor != -1 && !multiTickColor) {
             ImageViewCompat.setImageTintList(holder.itemCheckImageView, ColorStateList.valueOf(tickMarkColor));
         }
 
@@ -108,6 +111,14 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.ViewHolder> 
             holder.itemCardView.getLayoutParams().width = ColorUtil.dpToPixel(context, cardViewDimen);
             holder.itemCheckImageView.getLayoutParams().width = ColorUtil.dpToPixel(context, cardViewDimen / 2);
             holder.itemCheckImageView.getLayoutParams().height = ColorUtil.dpToPixel(context, cardViewDimen / 2);
+        }
+
+        if (colorItems != null && multiTickColor) {
+            if (colorItems.containsKey(colorsList.get(position).getColor())) {
+                ImageViewCompat.setImageTintList(holder.itemCheckImageView, ColorStateList.valueOf(tickMarkColor));
+            } else {
+                ImageViewCompat.setImageTintList(holder.itemCheckImageView, ColorStateList.valueOf(Color.WHITE));
+            }
         }
 
         if (colorItemShape == ColorItemShape.CIRCLE) {
@@ -187,6 +198,7 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.ViewHolder> 
      */
     public void setTickMarkColor(int tickMarkColor) {
         this.tickMarkColor = tickMarkColor;
+        notifyDataSetChanged();
     }
 
     public void customCardSize(float dimen) {
@@ -201,10 +213,10 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.ViewHolder> 
         notifyDataSetChanged();
     }
 
-    /**
-     * Listener to be triggered as soon as a color is pressed.
-     */
-    public interface OnColorItemClickListener {
-        void onColorItemClick(int position);
+    public void customTickMarkColorForSomeColors(int tickMarkColor, HashMap<Integer, Integer> map) {
+        this.colorItems = map;
+        this.multiTickColor = true;
+        this.tickMarkColor = tickMarkColor;
+        notifyDataSetChanged();
     }
 }

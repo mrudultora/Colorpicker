@@ -10,7 +10,8 @@
         android:id="@+id/btnDialogBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="150dp"
         android:text="Open Dialog Box"
         android:textAllCaps="false"
         android:textColor="@color/white"
@@ -23,6 +24,28 @@
         android:layout_below="@id/btnDialogBox"
         android:layout_centerHorizontal="true"
         android:text="Open Direct DialogBox"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="17sp" />
+
+    <Button
+        android:id="@+id/btnBottomSheet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btnDirectDialogBox"
+        android:layout_centerHorizontal="true"
+        android:text="Open Bottom Sheet DialogBox"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="17sp" />
+
+    <Button
+        android:id="@+id/btnDirectBottomSheet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btnBottomSheet"
+        android:layout_centerHorizontal="true"
+        android:text="Open Direct Bottom Sheet DialogBox"
         android:textAllCaps="false"
         android:textColor="@color/white"
         android:textSize="17sp" />

@@ -16,59 +16,75 @@ limitations under the License.
 
 package com.mrudultora.colorpicker;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.AppCompatTextView;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.mrudultora.colorpicker.listeners.OnColorItemClickListener;
+import com.mrudultora.colorpicker.listeners.OnDirectSelectColorListener;
+import com.mrudultora.colorpicker.listeners.OnSelectColorListener;
+import com.mrudultora.colorpicker.util.ColorItemShape;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * @author Mrudul Tora (mrudultora@gmail.com)
- * @since 1 May, 2021
+ * @since 3 May, 2021
  */
-public class ColorPicker implements ColorAdapter.OnColorItemClickListener {
+public class ColorPickerBottomSheetDialog implements OnColorItemClickListener {
     private final RecyclerView recyclerViewColors;
-    private final View dialogView;
+    private final View bottomSheetDialogView;
     private final RelativeLayout colorPaletteRelLayout;
+    private final AppCompatTextView dialogTitleText;
+    private final View dividerView;
+    private final AppCompatButton positiveButton;
+    private final AppCompatButton negativeButton;
+    private boolean cardSizeChanged = false;
+    private boolean tickSizeChanged = false;
+    private boolean positiveButtonTextChanged = false;
+    private boolean negativeButtonTextChanged = false;
+    private boolean titleTextChanged = false;
     private int columns = 5;
     private int defaultColor = 0;
     private int itemDrawableRes = 0;
     private int tickColor = Color.WHITE;
+    private int dividerViewColor = 0;
     private ColorItemShape colorShape = ColorItemShape.SQUARE;
     private final Context context;
     private final ArrayList<ColorPaletteItemModel> colorsList;
+    private HashMap<Integer,Integer> colorItems;
     private String dialogTitle;
     private String dialogPositiveButtonText;
     private String dialogNegativeButtonText;
     private OnDirectSelectColorListener directSelectColorListener;
     private OnSelectColorListener selectColorListener;
-    private Dialog dialog;
+    private BottomSheetDialog bottomSheetDialog;
     private ColorAdapter colorAdapter;
-    private Button positiveButton;
-    private Button negativeButton;
     private int selectedColorPosition = -1;
-    private boolean cardSizeChanged = false;
-    private boolean tickSizeChanged = false;
-    private float tickSizeDimen = 0f;                   // when equals 0 (default used would be 24dp)
+    private float tickSizeDimen = 0f;                 // when equals 0 (default used would be 24dp)
     private float cardViewDimen = 0f;                 // when equals 0 (default used would be 45dp)
 
-    public ColorPicker(Context context) {
+    public ColorPickerBottomSheetDialog(Context context) {
         this.context = context;
         colorsList = new ArrayList<>();
-        dialogView = LayoutInflater.from(context).inflate(R.layout.layout_color_palette_view, null, false);
-        colorPaletteRelLayout = dialogView.findViewById(R.id.colorPaletteRelLayout);
-        recyclerViewColors = dialogView.findViewById(R.id.recyclerViewColors);
+        bottomSheetDialogView = LayoutInflater.from(context).inflate(R.layout.layout_color_palette_bottomsheet, null, false);
+        colorPaletteRelLayout = bottomSheetDialogView.findViewById(R.id.colorPaletteRelLayout);
+        recyclerViewColors = bottomSheetDialogView.findViewById(R.id.recyclerViewColors);
+        positiveButton = bottomSheetDialogView.findViewById(R.id.positiveButton);
+        negativeButton = bottomSheetDialogView.findViewById(R.id.negativeButton);
+        dialogTitleText = bottomSheetDialogView.findViewById(R.id.dialogTitleText);
+        dividerView = bottomSheetDialogView.findViewById(R.id.dividerView);
         dialogTitle = context.getString(R.string.dialog_title);
         dialogPositiveButtonText = context.getString(R.string.dialog_positive_button_text);
         dialogNegativeButtonText = context.getString(R.string.dialog_negative_button_text);
@@ -84,17 +100,6 @@ public class ColorPicker implements ColorAdapter.OnColorItemClickListener {
         }
     }
 
-    public interface OnSelectColorListener {
-        void onColorSelected(int color, int position);
-
-        void cancel();
-    }
-
-
-    public interface OnDirectSelectColorListener {
-        void onDirectColorSelected(int color, int position);
-    }
-
     /**
      * Shows the dialog box using AlertDialog.Builder using layout_color_palette_view.xml.
      */
@@ -105,62 +110,73 @@ public class ColorPicker implements ColorAdapter.OnColorItemClickListener {
         if (colorsList == null || colorsList.isEmpty()) {
             setColors();
         }
-
         if (itemDrawableRes != 0) {
             colorAdapter = new ColorAdapter(colorsList, context, itemDrawableRes, this);
         } else {
             colorAdapter = new ColorAdapter(colorsList, context, colorShape, this);
         }
-        recyclerViewColors.setLayoutManager(new GridLayoutManager(context, columns));
-        recyclerViewColors.setAdapter(colorAdapter);
-
+        if (colorItems != null) {
+            colorAdapter.customTickMarkColorForSomeColors(tickColor, colorItems);
+        }
         if (defaultColor != 0) {
             colorAdapter.setDefaultColor(defaultColor);
         }
         if (tickColor != Color.WHITE) {
             colorAdapter.setTickMarkColor(tickColor);
         }
-
+        if (dividerViewColor != 0) {
+            dividerView.setBackgroundColor(dividerViewColor);
+        }
         if (tickSizeChanged) {
             colorAdapter.customTickSize(tickSizeDimen);
         }
-
         if (cardSizeChanged) {
             colorAdapter.customCardSize(cardViewDimen);
         }
+        recyclerViewColors.setLayoutManager(new GridLayoutManager(context, columns));
+        recyclerViewColors.setAdapter(colorAdapter);
+        if (titleTextChanged) {
+            dialogTitleText.setText(dialogTitle);
+        }
+        if (positiveButtonTextChanged) {
+            positiveButton.setText(dialogPositiveButtonText);
+        }
+        if (negativeButtonTextChanged) {
+            negativeButton.setText(dialogNegativeButtonText);
+        }
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(context)
-                .setView(dialogView)
-                .setPositiveButton(dialogPositiveButtonText, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        if (selectColorListener != null && colorsList != null) {
-                            if (selectedColorPosition != -1) {
-                                int color = colorsList.get(selectedColorPosition).getColor();
-                                selectColorListener.onColorSelected(color, selectedColorPosition);
-                            } else if (colorAdapter.getColorPosition() != -1) {
-                                int position = colorAdapter.getColorPosition();
-                                int color = colorsList.get(position).getColor();
-                                selectColorListener.onColorSelected(color, position);
-                            } else {
-                                dismissDialog();
-                            }
-                        }
+        bottomSheetDialog = new BottomSheetDialog(context);
+        bottomSheetDialog.setContentView(bottomSheetDialogView);
+        bottomSheetDialog.setCanceledOnTouchOutside(true);
+        bottomSheetDialog.setTitle("Choose the title");
+        BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from((View) bottomSheetDialogView.getParent());
+        bottomSheetBehavior.setPeekHeight(0);
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        bottomSheetDialog.show();
+
+        positiveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (selectColorListener != null && colorsList != null) {
+                    if (selectedColorPosition != -1) {
+                        int color = colorsList.get(selectedColorPosition).getColor();
+                        selectColorListener.onColorSelected(color, selectedColorPosition);
+                    } else if (colorAdapter.getColorPosition() != -1) {
+                        int position = colorAdapter.getColorPosition();
+                        int color = colorsList.get(position).getColor();
+                        selectColorListener.onColorSelected(color, position);
                     }
-                })
-                .setNegativeButton(dialogNegativeButtonText, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dismissDialog();
-                        selectColorListener.cancel();
-                    }
-                })
-                .setTitle(dialogTitle)
-                .setCancelable(true);
-        dialog = builder.create();
-        dialog.show();
-        positiveButton = ((AlertDialog) dialog).getButton(DialogInterface.BUTTON_POSITIVE);
-        negativeButton = ((AlertDialog) dialog).getButton(DialogInterface.BUTTON_NEGATIVE);
+                    dismissDialog();
+                }
+            }
+        });
+        negativeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dismissDialog();
+            }
+        });
+
         if (directSelectColorListener != null) {
             positiveButton.setVisibility(View.GONE);
             negativeButton.setVisibility(View.GONE);
@@ -168,31 +184,30 @@ public class ColorPicker implements ColorAdapter.OnColorItemClickListener {
     }
 
     /**
-     * On using OnSelectColorListener the dialog box would have the positive and negative buttons.
+     * On using OnSelectColorListener the bottom sheet dialog box would have the positive and negative buttons.
      * It would be fired on pressing either of the buttons.
      */
-    public ColorPicker setOnSelectColorListener(OnSelectColorListener selectColorListener) {
+    public ColorPickerBottomSheetDialog setOnSelectColorListener(OnSelectColorListener selectColorListener) {
         this.selectColorListener = selectColorListener;
         return this;
     }
 
     /**
-     * On using onDirectSelectColorListener the dialog box would not have the positive and negative buttons.
+     * On using onDirectSelectColorListener the bottom sheet dialog box would not have the positive and negative buttons.
      * It would be fired as soon as a color is pressed.
      */
-    public ColorPicker setOnDirectSelectColorListener(OnDirectSelectColorListener directSelectColorListener) {
+    public ColorPickerBottomSheetDialog setOnDirectSelectColorListener(OnDirectSelectColorListener directSelectColorListener) {
         this.directSelectColorListener = directSelectColorListener;
         return this;
     }
 
-
     /**
-     * Sets the colors from array defined in this library (array.xml).
+     * Sets the colors from array defined in this library (arrays.xml).
      * In total 15 default colors would be added.
      *
      * @return this
      */
-    public ColorPicker setColors() {
+    public ColorPickerBottomSheetDialog setColors() {
         if (context == null) {
             return this;
         }
@@ -205,13 +220,13 @@ public class ColorPicker implements ColorAdapter.OnColorItemClickListener {
     }
 
     /**
-     * Sets the colors from array defined in the array.xml of app.
-     * For example, see array.xml of this library.
+     * Sets the colors from array defined in the arrays.xml of app.
+     * For example, see arrays.xml of this library.
      *
      * @param resId (Array resource)
      * @return this
      */
-    public ColorPicker setColors(int resId) {
+    public ColorPickerBottomSheetDialog setColors(int resId) {
         if (context == null) {
             return this;
         }
@@ -229,7 +244,7 @@ public class ColorPicker implements ColorAdapter.OnColorItemClickListener {
      * @param colorsHexList (ArrayList of Strings)
      * @return this
      */
-    public ColorPicker setColors(ArrayList<String> colorsHexList) {
+    public ColorPickerBottomSheetDialog setColors(ArrayList<String> colorsHexList) {
         for (String colors : colorsHexList) {
             int color = Color.parseColor(colors);
             colorsList.add(new ColorPaletteItemModel(color, false));
@@ -244,7 +259,7 @@ public class ColorPicker implements ColorAdapter.OnColorItemClickListener {
      * @param colors (list of colors int value)
      * @return this
      */
-    public ColorPicker setColors(int... colors) {
+    public ColorPickerBottomSheetDialog setColors(int... colors) {
         for (int color : colors) {
             colorsList.add(new ColorPaletteItemModel(color, false));
         }
@@ -258,7 +273,7 @@ public class ColorPicker implements ColorAdapter.OnColorItemClickListener {
      * @param colorShape (shape of color item)
      * @return this
      */
-    public ColorPicker setColorItemShape(ColorItemShape colorShape) {
+    public ColorPickerBottomSheetDialog setColorItemShape(ColorItemShape colorShape) {
         this.colorShape = colorShape;
         return this;
     }
@@ -270,7 +285,7 @@ public class ColorPicker implements ColorAdapter.OnColorItemClickListener {
      * @param itemDrawable (Drawable resource)
      * @return this
      */
-    public ColorPicker setColorItemDrawable(int itemDrawable) {
+    public ColorPickerBottomSheetDialog setColorItemDrawable(int itemDrawable) {
         this.itemDrawableRes = itemDrawable;
         return this;
     }
@@ -281,55 +296,84 @@ public class ColorPicker implements ColorAdapter.OnColorItemClickListener {
      * @param columns (column count)
      * @return this
      */
-    public ColorPicker setColumns(int columns) {
+    public ColorPickerBottomSheetDialog setColumns(int columns) {
         this.columns = columns;
         return this;
     }
 
     /**
-     * Sets the default color when dialog box pops up.
+     * Sets the default color when bottom sheet dialog pops up.
      * Default color would have a tick mark on the color.
      *
      * @param defaultColor (default color int value)
      * @return this
      */
-    public ColorPicker setDefaultSelectedColor(int defaultColor) {
+    public ColorPickerBottomSheetDialog setDefaultSelectedColor(int defaultColor) {
         this.defaultColor = defaultColor;
         return this;
     }
 
     /**
-     * Sets the default color when dialog box pops up.
+     * Sets the default color when bottom sheet dialog pops up.
      * Default color would have a tick mark on the color.
      *
      * @param defaultColor (default color int value)
      * @return this
      */
-    public ColorPicker setDefaultSelectedColor(String defaultColor) {
+    public ColorPickerBottomSheetDialog setDefaultSelectedColor(String defaultColor) {
         this.defaultColor = Color.parseColor(defaultColor);
         return this;
     }
 
     /**
-     * Sets the color of tick mark on item in color palette.
+     * Sets the color of tick mark on item in color palette on every color item selected.
      * Default color is white.
      *
      * @param tickColor (tick color on item in palette)
      * @return this
      */
-    public ColorPicker setTickColor(int tickColor) {
+    public ColorPickerBottomSheetDialog setTickColor(int tickColor) {
         this.tickColor = tickColor;
+        return this;
+    }
+
+    /**
+     * Sets the color of tick mark on particular items in color palette. These items would have
+     * the color passed in this method.
+     * Default color is white.
+     *
+     * @param tickColor (tick color on item in palette)
+     * @return this
+     */
+    public ColorPickerBottomSheetDialog setTickColor(int tickColor, int... colorItems) {
+        this.tickColor = tickColor;
+        this.colorItems = new HashMap<>();
+        for (int item : colorItems) {
+            this.colorItems.put(item,item);
+        }
+        return this;
+    }
+
+    /**
+     * Sets the color of divider (below the title of dialog).
+     *
+     * @param backgroundColor (color)
+     * @return this
+     */
+    public ColorPickerBottomSheetDialog setDividerViewColor(int backgroundColor) {
+        this.dividerViewColor = backgroundColor;
         return this;
     }
 
     /**
      * Sets the title of dialog box. Default title is "Choose Color".
      *
-     * @param dialogTitle (Title of dialog box)
+     * @param dialogTitle (Title of bottom sheet dialog box)
      * @return this
      */
-    public ColorPicker setDialogTitle(String dialogTitle) {
+    public ColorPickerBottomSheetDialog setDialogTitle(String dialogTitle) {
         this.dialogTitle = dialogTitle;
+        titleTextChanged = true;
         return this;
     }
 
@@ -339,8 +383,9 @@ public class ColorPicker implements ColorAdapter.OnColorItemClickListener {
      * @param dialogPositiveButtonText (Positive button text)
      * @return this
      */
-    public ColorPicker setPositiveButtonText(String dialogPositiveButtonText) {
+    public ColorPickerBottomSheetDialog setPositiveButtonText(String dialogPositiveButtonText) {
         this.dialogPositiveButtonText = dialogPositiveButtonText;
+        positiveButtonTextChanged = true;
         return this;
     }
 
@@ -350,74 +395,58 @@ public class ColorPicker implements ColorAdapter.OnColorItemClickListener {
      * @param dialogNegativeButtonText (Negative button text)
      * @return this
      */
-    public ColorPicker setNegativeButtonText(String dialogNegativeButtonText) {
+    public ColorPickerBottomSheetDialog setNegativeButtonText(String dialogNegativeButtonText) {
         this.dialogNegativeButtonText = dialogNegativeButtonText;
+        negativeButtonTextChanged = true;
         return this;
     }
 
     /**
-     * Get the positive button from dialog box.
-     * This method may throw NullPointerException if the dialog box is not showing on screen.
+     * Get the positive button from bottom sheet dialog box.
      *
      * @return positiveButton
-     * @throws NullPointerException (if the dialog is null or dialog is not showing).
      */
-    public Button getPositiveButton() throws NullPointerException {
-        if (dialog == null || !dialog.isShowing()) {
-            throw new NullPointerException("Dialog is null or not showing. Call this particular method after the colorpicker.show() is called.");
-        }
-        positiveButton = ((AlertDialog) dialog).getButton(DialogInterface.BUTTON_POSITIVE);
+    public AppCompatButton getPositiveButton() {
         return positiveButton;
     }
 
     /**
-     * Get the negative button from dialog box.
-     * This method may throw NullPointerException if the dialog box is not showing on screen.
+     * Get the negative button from bottom sheet dialog box.
      *
      * @return negativeButton
-     * @throws NullPointerException (if the dialog is null or dialog is not showing).
      */
-    public Button getNegativeButton() throws NullPointerException {
-        if (dialog == null || !dialog.isShowing()) {
-            throw new NullPointerException("Dialog is null or not showing. Call this particular method after the colorpicker.show() is called.");
-        }
-        negativeButton = ((AlertDialog) dialog).getButton(DialogInterface.BUTTON_NEGATIVE);
+    public AppCompatButton getNegativeButton() {
         return negativeButton;
     }
 
     /**
-     * Get the dialog title for customising it.
-     * This method may throw NullPointerException if the dialog box is not showing on screen.
+     * Get the bottom sheet dialog title for customising it.
      *
-     * @return dialogTitle (String)
+     * @return dialogTitleText (AppCompatTextView)
      */
-    public TextView getDialogTitle() throws NullPointerException {
-        int titleId = context.getResources().getIdentifier("alertTitle", "id", "android");
-        if (dialog.findViewById(titleId) == null) {
-            throw new NullPointerException("Dialog is null or not showing. Call this particular method after the colorpicker.show() is called.");
-        }
-        return dialog.findViewById(titleId);
+    public AppCompatTextView getDialogTitle() {
+        return dialogTitleText;
     }
 
     /**
-     * Get dialog for more control over dialog.
+     * Get dialog for more control over bottom sheet dialog.
      *
-     * @return dialog
+     * @return bottomSheetDialog
      */
-    public Dialog getDialog() throws NullPointerException {
-        if (dialog == null) {
+    public BottomSheetDialog getDialog() throws NullPointerException {
+        if (bottomSheetDialog == null) {
             throw new NullPointerException("Dialog is null. Call this particular method after the colorpicker.show() is called.");
         }
-        return dialog;
+        return bottomSheetDialog;
     }
 
     /**
      * Get the view inflated in dialog box.
      *
-     * @return dialogView
+     * @return bottomSheetDialogView
      */
     public View getDialogView() {
-        return dialogView;
+        return bottomSheetDialogView;
     }
 
     /**
@@ -433,8 +462,8 @@ public class ColorPicker implements ColorAdapter.OnColorItemClickListener {
      * Dismiss the dialog if it's visible on screen.
      */
     public void dismissDialog() {
-        if (dialog != null && dialog.isShowing()) {
-            dialog.dismiss();
+        if (bottomSheetDialog != null && bottomSheetDialog.isShowing()) {
+            bottomSheetDialog.cancel();
         }
     }
 
@@ -445,7 +474,7 @@ public class ColorPicker implements ColorAdapter.OnColorItemClickListener {
      * @param dimen (in dp)
      * @return this
      */
-    public ColorPicker setColorItemDimenInDp(int dimen) {
+    public ColorPickerBottomSheetDialog setColorItemDimenInDp(int dimen) {
         cardSizeChanged = true;
         this.cardViewDimen = dimen;
         return this;
@@ -457,10 +486,9 @@ public class ColorPicker implements ColorAdapter.OnColorItemClickListener {
      * @param dimen (in dp)
      * @return this
      */
-    public ColorPicker setTickDimenInDp(int dimen) {
+    public ColorPickerBottomSheetDialog setTickDimenInDp(int dimen) {
         tickSizeChanged = true;
         this.tickSizeDimen = dimen;
         return this;
-
     }
 }

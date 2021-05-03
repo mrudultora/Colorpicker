@@ -17,6 +17,7 @@ limitations under the License.
 package com.mrudultora.colorpickerapp;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -25,23 +26,30 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-import com.mrudultora.colorpicker.ColorItemShape;
-import com.mrudultora.colorpicker.ColorPicker;
+import com.mrudultora.colorpicker.ColorPickerBottomSheetDialog;
+import com.mrudultora.colorpicker.listeners.OnDirectSelectColorListener;
+import com.mrudultora.colorpicker.listeners.OnSelectColorListener;
+import com.mrudultora.colorpicker.util.ColorItemShape;
+import com.mrudultora.colorpicker.ColorPickerDialog;
 
 /**
  * @author Mrudul Tora (mrudultora@gmail.com)
  */
 public class MainActivity extends AppCompatActivity {
     int defaultColor;
-    Button btnDialogBox, btnDirectDialogBox;
+    Button btnDialogBox, btnDirectDialogBox, btnBottomSheet, btnDirectBottomSheet;
+    ColorPickerDialog colorPickerDialog;
+    ColorPickerBottomSheetDialog bottomSheetDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         setContentView(R.layout.activity_main);
         btnDialogBox = findViewById(R.id.btnDialogBox);
         btnDirectDialogBox = findViewById(R.id.btnDirectDialogBox);
-        defaultColor = Color.parseColor("#ea1e63");
+        btnBottomSheet = findViewById(R.id.btnBottomSheet);
+        btnDirectBottomSheet = findViewById(R.id.btnDirectBottomSheet);
         btnDialogBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -54,17 +62,29 @@ public class MainActivity extends AppCompatActivity {
                 selectDirectColorDialog();
             }
         });
+        btnBottomSheet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                selectBottomSheet();
+            }
+        });
+        btnDirectBottomSheet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                selectDirectBottomSheet();
+            }
+        });
     }
 
     public void selectColorDialog() {
-        final ColorPicker colorPicker = new ColorPicker(MainActivity.this);
-        colorPicker.setColors()
+        colorPickerDialog = new ColorPickerDialog(MainActivity.this);
+        colorPickerDialog.setColors()
                 .setColumns(5)
                 .setDefaultSelectedColor(defaultColor)
                 .setColorItemShape(ColorItemShape.CIRCLE)
                 .setTickDimenInDp(24)
-                .setTickColor(Color.WHITE)
-                .setOnSelectColorListener(new ColorPicker.OnSelectColorListener() {
+                .setTickColor(Color.BLACK, Color.parseColor("#f44236"), Color.parseColor("#ff9700"), Color.parseColor("#4cb050"))
+                .setOnSelectColorListener(new OnSelectColorListener() {
                     @Override
                     public void onColorSelected(int color, int position) {
                         btnDialogBox.setBackgroundColor(color);
@@ -79,24 +99,25 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void cancel() {
-                        colorPicker.dismissDialog();
+                        colorPickerDialog.dismissDialog();
                     }
                 })
                 .show();
-//        colorPicker.setDialogTitle("Choose the color");
-//        colorPicker.getDialogTitle().setTextColor(Color.RED);
-//        colorPicker.setColorItemDrawable(R.drawable.ic_baseline_star_24)
+//        customizations
+//        colorPickerDialog.setDialogTitle("Choose the color");
+//        colorPickerDialog.getDialogTitle().setTextColor(Color.RED);
+//        colorPickerDialog.setColorItemDrawable(R.drawable.ic_baseline_star_24)
     }
 
     public void selectDirectColorDialog() {
-        final ColorPicker colorPicker = new ColorPicker(MainActivity.this);
-        colorPicker.setColors()
+        colorPickerDialog = new ColorPickerDialog(MainActivity.this);
+        colorPickerDialog.setColors()
                 .setColumns(5)
                 .setDefaultSelectedColor(defaultColor)
                 .setColorItemShape(ColorItemShape.SQUARE)
-                .setTickDimenInDp(24)
+                .setTickDimenInDp(45)
                 .setTickColor(Color.WHITE)
-                .setOnDirectSelectColorListener(new ColorPicker.OnDirectSelectColorListener() {
+                .setOnDirectSelectColorListener(new OnDirectSelectColorListener() {
                     @Override
                     public void onDirectColorSelected(int color, int position) {
                         if (getSupportActionBar() != null) {
@@ -110,8 +131,70 @@ public class MainActivity extends AppCompatActivity {
                     }
                 })
                 .show();
-//        colorPicker.setDialogTitle("Choose the color");
-//        colorPicker.getDialogTitle().setTextColor(Color.RED);
-//        colorPicker.setColorItemDrawable(R.drawable.ic_baseline_star_24)
+//        customizations
+//        colorPickerDialog.setDialogTitle("Choose the color");
+//        colorPickerDialog.getDialogTitle().setTextColor(Color.RED);
+//        colorPickerDialog.setColorItemDrawable(R.drawable.ic_baseline_star_24)
+    }
+
+    public void selectBottomSheet() {
+        bottomSheetDialog = new ColorPickerBottomSheetDialog(this);
+        bottomSheetDialog.setColors()
+                .setColumns(6)
+                .setDefaultSelectedColor(defaultColor)
+                .setColorItemShape(ColorItemShape.CIRCLE)
+                .setTickColor(Color.BLACK, Color.parseColor("#f44236"), Color.parseColor("#ff9700"), Color.parseColor("#4cb050"))
+                .setOnSelectColorListener(new OnSelectColorListener() {
+                    @Override
+                    public void onColorSelected(int color, int position) {
+                        if (getSupportActionBar() != null) {
+                            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(color));
+                        }
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            getWindow().setStatusBarColor(color);
+                        }
+                        btnBottomSheet.setBackgroundColor(color);
+                        defaultColor = color;
+                    }
+
+                    @Override
+                    public void cancel() {
+                        bottomSheetDialog.dismissDialog();
+                    }
+                })
+                .show();
+//        customizations
+//        bottomSheetDialog.getDialogTitle().setTextColor(Color.CYAN);
+//        bottomSheetDialog.getPositiveButton().setTextColor(Color.GREEN);
+//        bottomSheetDialog.getNegativeButton().setTextColor(Color.RED);
+    }
+
+    public void selectDirectBottomSheet() {
+        bottomSheetDialog = new ColorPickerBottomSheetDialog(this);
+        bottomSheetDialog.setColors()
+                .setColumns(6)
+                .setDefaultSelectedColor(defaultColor)
+                .setColorItemShape(ColorItemShape.SQUARE)
+                .setOnDirectSelectColorListener(new OnDirectSelectColorListener() {
+                    @Override
+                    public void onDirectColorSelected(int color, int position) {
+                        if (getSupportActionBar() != null) {
+                            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(color));
+                        }
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            getWindow().setStatusBarColor(color);
+                        }
+                        btnDirectBottomSheet.setBackgroundColor(color);
+                        defaultColor = color;
+                    }
+                });
+//        customizations
+//        bottomSheetDialog.getDialogBaseLayout().setBackgroundColor(Color.MAGENTA);
+//        bottomSheetDialog.setTickColor(Color.YELLOW);
+//        bottomSheetDialog.setColorItemDimenInDp(60);
+//        bottomSheetDialog.setColorItemDrawable(R.drawable.ic_baseline_star_24);
+
+        bottomSheetDialog.setTickDimenInDp(60);
+        bottomSheetDialog.show();
     }
 }
