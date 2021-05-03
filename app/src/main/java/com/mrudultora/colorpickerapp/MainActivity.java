@@ -17,7 +17,6 @@ limitations under the License.
 package com.mrudultora.colorpickerapp;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
 
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
