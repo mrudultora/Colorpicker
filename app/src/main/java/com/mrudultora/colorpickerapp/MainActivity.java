@@ -44,7 +44,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         setContentView(R.layout.activity_main);
         btnDialogBox = findViewById(R.id.btnDialogBox);
         btnDirectDialogBox = findViewById(R.id.btnDirectDialogBox);
