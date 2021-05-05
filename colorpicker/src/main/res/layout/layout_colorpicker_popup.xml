@@ -12,13 +12,13 @@
         android:layout_centerInParent="true"
         android:paddingLeft="@dimen/colorpicker_padding_right_left"
         android:paddingTop="@dimen/colorpicker_padding_top_bottom"
-        android:paddingRight="@dimen/colorpicker_padding_right_left"
-        android:paddingBottom="@dimen/colorpicker_padding_top_bottom">
+        android:paddingRight="@dimen/colorpicker_padding_right_left">
 
         <com.mrudultora.colorpicker.ColorPickerView
             android:id="@+id/colorPickerView"
             android:layout_width="@dimen/colorpicker_view_width"
-            android:layout_height="@dimen/colorpicker_view_height" />
+            android:layout_height="@dimen/colorpicker_view_height"
+            android:background="@drawable/ic_border_background" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/hueImageView"
@@ -26,6 +26,7 @@
             android:layout_height="@dimen/hue_view_height"
             android:layout_marginLeft="@dimen/colorpicker_spacing"
             android:layout_toRightOf="@id/colorPickerView"
+            android:background="@drawable/ic_border_background"
             android:scaleType="fitXY"
             android:src="@drawable/ic_hue_colorpicker" />
 
@@ -35,6 +36,7 @@
             android:layout_height="@dimen/alpha_view_height"
             android:layout_marginLeft="@dimen/colorpicker_spacing"
             android:layout_toRightOf="@id/hueImageView"
+            android:background="@drawable/ic_border_background"
             android:scaleType="fitXY"
             android:src="@drawable/ic_alpha_colorpicker" />
 
@@ -88,6 +90,7 @@
                     android:id="@+id/checkeredOldColor"
                     android:layout_width="60dp"
                     android:layout_height="30dp"
+                    android:background="@drawable/ic_border_background"
                     android:scaleType="fitXY"
                     android:src="@drawable/ic_alpha_colorpicker" />
 
@@ -114,6 +117,7 @@
                     android:id="@+id/checkeredNewColor"
                     android:layout_width="60dp"
                     android:layout_height="30dp"
+                    android:background="@drawable/ic_border_background"
                     android:scaleType="fitXY"
                     android:src="@drawable/ic_alpha_colorpicker" />
 

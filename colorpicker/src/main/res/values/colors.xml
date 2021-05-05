@@ -42,4 +42,7 @@ limitations under the License.
     <color name="cursor_color">#A09F9F</color>
     <color name="arrow_color">#181717</color>
 
+    <!-- Border colors for views in ColorPickerPopup -->
+    <color name="border_color">#181717</color>
+
 </resources>

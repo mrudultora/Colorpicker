@@ -40,4 +40,7 @@ limitations under the License.
     <color name="dividerColor">#484545</color>
     <color name="arrow_color">#E7E0E0</color>
 
+    <!-- Border colors for views in ColorPickerPopup -->
+    <color name="border_color">#E7E0E0</color>
+
 </resources>

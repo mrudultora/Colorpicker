@@ -32,6 +32,6 @@ limitations under the License.
     <dimen name="colorpicker_spacing">10dp</dimen>
     <dimen name="colorpicker_padding_right_left">20dp</dimen>
     <dimen name="colorpicker_padding_top_bottom">10dp</dimen>
-    <dimen name="colorpicker_margin_linearlayout">10dp</dimen>
+    <dimen name="colorpicker_margin_linearlayout">14dp</dimen>
     <dimen name="arrow_padding">8dp</dimen>
 </resources>
