@@ -16,4 +16,11 @@ limitations under the License.
 
 <resources>
     <string name="app_name">Colorpicker-App</string>
+    <string name="open_dialog_box">Open Dialog Box</string>
+    <string name="open_direct_dialog_box">Open Direct DialogBox</string>
+    <string name="open_bottom_sheet">Open Bottom Sheet DialogBox</string>
+    <string name="open_direct_bottom_sheet">Open Direct Bottom Sheet DialogBox</string>
+    <string name="open_color_picker_popup">Open ColorPicker Popup</string>
+    <string name="pop_up">Pop Up</string>
+    <string name="dialogs">Dialogs</string>
 </resources>
