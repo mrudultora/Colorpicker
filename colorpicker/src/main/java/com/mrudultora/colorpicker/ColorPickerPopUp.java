@@ -21,7 +21,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
@@ -32,9 +31,6 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 
 import androidx.appcompat.widget.AppCompatImageView;
-
-import com.mrudultora.colorpicker.listeners.OnDirectSelectColorListener;
-import com.mrudultora.colorpicker.listeners.OnSelectColorListener;
 
 /**
  * A ColorPicker pop up to choose any color with or without alpha.
@@ -93,6 +89,9 @@ public class ColorPickerPopUp extends View implements ViewTreeObserver.OnGlobalL
         dialogNegativeButtonText = context.getString(R.string.dialog_negative_button_text);
     }
 
+    /**
+     * Shows the dialog box using AlertDialog.Builder using layout_colorpicker_popup.xml.
+     */
     @SuppressLint("ClickableViewAccessibility")
     public void show() {
         if (selectedColor == Integer.MAX_VALUE) {
@@ -102,7 +101,11 @@ public class ColorPickerPopUp extends View implements ViewTreeObserver.OnGlobalL
             alphaImageView.setVisibility(View.GONE);
             alphaOverlay.setVisibility(View.GONE);
             cursorAlpha.setVisibility(View.GONE);
-            selectedColor = selectedColor | 0xff000000;
+            // For removing alpha if the default color passed has some alpha value.
+            // FF will make all the initial 8 bits equal to one. Doing a bitwise OR will result in
+            // the all initial 8 bits equal to 1 and thus nullify the effect of any alpha in the default color.
+            // The rest bits are zero. Doing OR with them result in the original bits.
+            selectedColor = selectedColor | 0xFF000000;
         } else {
             alpha = Color.alpha(selectedColor);
         }
@@ -122,7 +125,7 @@ public class ColorPickerPopUp extends View implements ViewTreeObserver.OnGlobalL
                 .setNegativeButton(dialogNegativeButtonText, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-
+                        pickColorListener.onCancel();
                     }
                 })
                 .setCancelable(true);
@@ -137,53 +140,15 @@ public class ColorPickerPopUp extends View implements ViewTreeObserver.OnGlobalL
         alphaImageView.setOnTouchListener(this);
     }
 
-    public ColorPickerPopUp setDefaultColor(int defaultColor) {
-        this.selectedColor = defaultColor;
-        return this;
-    }
-
-    private void setHue(float hue) {
-        currentColorsHSV[0] = hue;
-        if (showAlpha) {
-            updateAlphaOverlay();
-        }
-    }
-
-    private float getHue() {
-        return currentColorsHSV[0];
-    }
-
-    private void setSaturation(float saturation) {
-        currentColorsHSV[1] = saturation;
-    }
-
-    private float getSaturation() {
-        return currentColorsHSV[1];
-    }
-
-    private void setValue(float value) {
-        currentColorsHSV[2] = value;
-    }
-
-    private float getValue() {
-        return currentColorsHSV[2];
-    }
-
-    private void setShowAlpha(boolean bool) {
-        this.showAlpha = bool;
-    }
-
-    private void updateAlphaOverlay() {
-        GradientDrawable gradientDrawable = new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM,
-                new int[]{Color.HSVToColor(currentColorsHSV), Color.TRANSPARENT});
-        alphaOverlay.setBackground(gradientDrawable);
-    }
-
-    private int getCurrentColor() {
-        selectedColor = Color.HSVToColor(currentColorsHSV);
-        return alpha << 24 | (selectedColor & 0X00FFFFFF);
-    }
-
+    /**
+     * For handling touch events on colorPickerView, hueImageView, alphaImageView.
+     * Sets the hue, saturation, and value on the basis of current coordinates and the size of
+     * respective views.
+     *
+     * @param view        (view on which touch event happened)
+     * @param motionEvent (type of motion event)
+     * @return boolean
+     */
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -246,6 +211,10 @@ public class ColorPickerPopUp extends View implements ViewTreeObserver.OnGlobalL
         return false;
     }
 
+    /**
+     * This method will be called on very first time the dialog would be showed.
+     * Used to set the positions of cursors/pointers for first time the dialog pops up.
+     */
     @Override
     public void onGlobalLayout() {
         moveCursorHue();
@@ -257,6 +226,12 @@ public class ColorPickerPopUp extends View implements ViewTreeObserver.OnGlobalL
         dialogView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
     }
 
+    /**
+     * This method is used to move the cursor/pointer in colorPickerView.
+     * It sets the position of cursor according to the coordinates of touch on colorPickerView.
+     * For accuracy, the x,y coordinates are found out using current saturation and value.
+     * Padding of the parent view and size of cursor is taken into account for setting margins.
+     */
     private void moveCursorColorPicker() {
         float x = getSaturation() * colorPickerView.getMeasuredWidth();
         float y = (1f - getValue()) * colorPickerView.getMeasuredHeight();
@@ -266,6 +241,12 @@ public class ColorPickerPopUp extends View implements ViewTreeObserver.OnGlobalL
         cursorColorPicker.setLayoutParams(layoutParams);
     }
 
+    /**
+     * This method is used to move the cursor/pointer in hueImageView.
+     * It sets the position of cursor according to the coordinates of touch on hueImageView.
+     * For accuracy, the y coordinate is found out using current hue.
+     * Padding of the parent view and size of cursor is taken into account for setting margins.
+     */
     private void moveCursorHue() {
         float y = hueImageView.getMeasuredHeight() - (getHue() * hueImageView.getMeasuredHeight() / 360f);
         if (y == hueImageView.getMeasuredHeight()) {
@@ -277,6 +258,12 @@ public class ColorPickerPopUp extends View implements ViewTreeObserver.OnGlobalL
         cursorHue.setLayoutParams(layoutParams);
     }
 
+    /**
+     * This method is used to move the cursor/pointer in alphaImageView (if visible).
+     * It sets the position of cursor according to the coordinates of touch on alphaImageView.
+     * For accuracy, the y coordinate is found out using current alpha.
+     * Padding of the parent view and size of cursor is taken into account for setting margins.
+     */
     private void moveCursorAlpha() {
         final int measuredHeight = alphaImageView.getMeasuredHeight();
         float y = measuredHeight - ((this.alpha * measuredHeight) / 255f);
@@ -286,19 +273,141 @@ public class ColorPickerPopUp extends View implements ViewTreeObserver.OnGlobalL
         cursorAlpha.setLayoutParams(layoutParams);
     }
 
+    /**
+     * To change the gradient of overlay over the drawable of alphaImageView with repect to the
+     * selected color. Only used if showAlpha is set to true.
+     */
+    private void updateAlphaOverlay() {
+        GradientDrawable gradientDrawable = new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM,
+                new int[]{Color.HSVToColor(currentColorsHSV), Color.TRANSPARENT});
+        alphaOverlay.setBackground(gradientDrawable);
+    }
+
+    /**
+     * Selected color is equal to current value of HSV.
+     * In case, alpha is added then it must be counted.
+     * Understanding the return statement :
+     * <p>
+     * Alpha is used for first 8 bits (out of 32 bits). To make 8 bits to 32 bits left shift is used.
+     * Final alpha would be 32 bits (initial 8 bits are value of current alpha and remaining are zeroes).
+     * Any present alpha is removed from the selected color by doing bitwise AND with 0X00FFFFFF.
+     * Initial 8 bits are zero and thus all the present alpha in selected color would become zero.
+     * After that a bitwise OR would assert that the current value of alpha combines with the
+     * selected color without alpha.
+     * <p>
+     * This would produce the exact required color (color picked).
+     *
+     * @return color (int)
+     */
+    private int getCurrentColor() {
+        selectedColor = Color.HSVToColor(currentColorsHSV);
+        return alpha << 24 | (selectedColor & 0X00FFFFFF);
+    }
+
+    /**
+     * Sets the hue on basis of position on touch in hueImageView.
+     * Range of hue is 0-360.
+     *
+     * @param hue (float)
+     */
+    private void setHue(float hue) {
+        currentColorsHSV[0] = hue;
+        if (showAlpha) {
+            updateAlphaOverlay();
+        }
+    }
+
+    /**
+     * Gets the current hue.
+     *
+     * @return float
+     */
+    private float getHue() {
+        return currentColorsHSV[0];
+    }
+
+    /**
+     * Sets the saturation on basis of position on touch in colorPickerView.
+     * Range of saturation is 0-1.
+     *
+     * @param saturation (float)
+     */
+    private void setSaturation(float saturation) {
+        currentColorsHSV[1] = saturation;
+    }
+
+    /**
+     * Gets the current saturation.
+     *
+     * @return float
+     */
+    private float getSaturation() {
+        return currentColorsHSV[1];
+    }
+
+    /**
+     * Sets the value on basis of position on touch in colorPickerView.
+     * Range of value is 0-1.
+     *
+     * @param value (float)
+     */
+    private void setValue(float value) {
+        currentColorsHSV[2] = value;
+    }
+
+    /**
+     * Gets the current value.
+     *
+     * @return float
+     */
+    private float getValue() {
+        return currentColorsHSV[2];
+    }
+
+    /**
+     * Returns whether the motion event is valid or not according to the need of color picker.
+     *
+     * @param motionEvent (Motion Event)
+     * @return boolean
+     */
     private boolean isRequiredMotionEvent(MotionEvent motionEvent) {
         return motionEvent.getAction() == MotionEvent.ACTION_DOWN ||
                 motionEvent.getAction() == MotionEvent.ACTION_UP ||
                 motionEvent.getAction() == MotionEvent.ACTION_MOVE;
     }
 
-    @Override
-    protected void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-
+    /**
+     * Sets the default color in ColorPickerView, Hue and Alpha (if enabled).
+     *
+     * @param defaultColor (int format)
+     * @return this
+     */
+    public ColorPickerPopUp setDefaultColor(int defaultColor) {
+        this.selectedColor = defaultColor;
+        return this;
     }
 
-    private void initializeUI() {
+    /**
+     * On using OnPickColorListener to select the picked color.
+     * It would be fired on pressing either of the buttons (positive or negative).
+     *
+     * @param onPickColorListener (onPickColorListener)
+     * @return this
+     */
+    public ColorPickerPopUp setOnPickColorListener(OnPickColorListener onPickColorListener) {
+        this.pickColorListener = onPickColorListener;
+        return this;
+    }
 
+    /**
+     * Sets whether to show Alpha Channel or not.
+     * Default value is true.
+     *
+     * @param showAlpha (to show alpha or not)
+     * @return this
+     */
+    public ColorPickerPopUp setShowAlpha(boolean showAlpha) {
+        this.showAlpha = showAlpha;
+        return this;
     }
 }

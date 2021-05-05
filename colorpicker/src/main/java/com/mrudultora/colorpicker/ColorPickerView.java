@@ -25,7 +25,6 @@ import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.Shader;
-import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -83,7 +82,7 @@ public class ColorPickerView extends View {
         ComposeShader composeShader = new ComposeShader(verticalShader, horizontalShader, PorterDuff.Mode.MULTIPLY);
         paint.setShader(composeShader);
         canvas.drawRect(0f, 0f, this.getMeasuredWidth(), this.getMeasuredHeight(), paint);
-        setLayerType(LAYER_TYPE_SOFTWARE,paint);
+        setLayerType(LAYER_TYPE_SOFTWARE, paint);
     }
 
     public void setHue(float hue) {

@@ -17,7 +17,6 @@ limitations under the License.
 package com.mrudultora.colorpicker.util;
 
 import android.content.Context;
-import android.util.TypedValue;
 
 /**
  * @author Mrudul Tora (mrudultora@gmail.com)

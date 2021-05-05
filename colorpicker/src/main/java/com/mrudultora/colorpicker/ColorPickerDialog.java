@@ -147,7 +147,6 @@ public class ColorPickerDialog implements OnColorItemClickListener {
                 .setNegativeButton(dialogNegativeButtonText, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        dismissDialog();
                         selectColorListener.cancel();
                     }
                 })
