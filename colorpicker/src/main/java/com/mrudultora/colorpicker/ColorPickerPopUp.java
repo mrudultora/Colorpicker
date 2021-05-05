@@ -385,6 +385,7 @@ public class ColorPickerPopUp extends View implements ViewTreeObserver.OnGlobalL
 
     /**
      * Sets the default color in ColorPickerView, Hue and Alpha (if enabled).
+     * Default color if not set is Color.HSVToColor(new float[]{1f, 1f, 1f}).
      *
      * @param defaultColor (int format)
      * @return this
