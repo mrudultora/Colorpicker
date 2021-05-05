@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+//        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         btnDialogBox = findViewById(R.id.btnDialogBox);
@@ -58,9 +58,7 @@ public class MainActivity extends AppCompatActivity {
         btnDialogBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                selectColorDialog();
-                ColorPickerPopUp colorPickerPopUp = new ColorPickerPopUp(MainActivity.this);
-                colorPickerPopUp.show();
+                selectColorDialog();
             }
         });
         btnDirectDialogBox.setOnClickListener(new View.OnClickListener() {
@@ -84,9 +82,33 @@ public class MainActivity extends AppCompatActivity {
         btnColorPickerPopup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ColorPickerPopUp colorPickerPopUp = new ColorPickerPopUp(MainActivity.this);
-                colorPickerPopUp.setDefaultColor(Color.parseColor("#D900FF00"));
+                final ColorPickerPopUp colorPickerPopUp = new ColorPickerPopUp(MainActivity.this);
+                colorPickerPopUp.setShowAlpha(true)
+                        .setDefaultColor(defaultColor)
+                        .setDialogTitle("Pick a Color")
+                        .setPositiveButtonText("Okay")
+                        .setNegativeButtonText("Kancel")
+                        .setOnPickColorListener(new ColorPickerPopUp.OnPickColorListener() {
+                            @Override
+                            public void onColorPicked(int color) {
+                                if (getSupportActionBar() != null) {
+                                    getSupportActionBar().setBackgroundDrawable(new ColorDrawable(color));
+                                }
+                                getWindow().setStatusBarColor(color);
+                                btnColorPickerPopup.setBackgroundColor(color);
+                                defaultColor = color;
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                    System.out.println("Color picked is :" + Color.valueOf(color));
+                                }
+                            }
+
+                            @Override
+                            public void onCancel() {
+                                colorPickerPopUp.dismissDialog();
+                            }
+                        });
                 colorPickerPopUp.show();
+                colorPickerPopUp.getDialogTitle().setTextColor(Color.RED);
             }
         });
     }
@@ -106,9 +128,7 @@ public class MainActivity extends AppCompatActivity {
                         if (getSupportActionBar() != null) {
                             getSupportActionBar().setBackgroundDrawable(new ColorDrawable(color));
                         }
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            getWindow().setStatusBarColor(color);
-                        }
+                        getWindow().setStatusBarColor(color);
                         defaultColor = color;
                     }
 
@@ -138,9 +158,7 @@ public class MainActivity extends AppCompatActivity {
                         if (getSupportActionBar() != null) {
                             getSupportActionBar().setBackgroundDrawable(new ColorDrawable(color));
                         }
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            getWindow().setStatusBarColor(color);
-                        }
+                        getWindow().setStatusBarColor(color);
                         btnDirectDialogBox.setBackgroundColor(color);
                         defaultColor = color;
                     }
@@ -165,9 +183,7 @@ public class MainActivity extends AppCompatActivity {
                         if (getSupportActionBar() != null) {
                             getSupportActionBar().setBackgroundDrawable(new ColorDrawable(color));
                         }
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            getWindow().setStatusBarColor(color);
-                        }
+                        getWindow().setStatusBarColor(color);
                         btnBottomSheet.setBackgroundColor(color);
                         defaultColor = color;
                     }
@@ -196,9 +212,7 @@ public class MainActivity extends AppCompatActivity {
                         if (getSupportActionBar() != null) {
                             getSupportActionBar().setBackgroundDrawable(new ColorDrawable(color));
                         }
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            getWindow().setStatusBarColor(color);
-                        }
+                        getWindow().setStatusBarColor(color);
                         btnDirectBottomSheet.setBackgroundColor(color);
                         defaultColor = color;
                     }

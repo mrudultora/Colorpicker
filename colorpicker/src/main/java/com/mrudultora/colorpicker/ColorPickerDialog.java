@@ -377,7 +377,7 @@ public class ColorPickerDialog implements OnColorItemClickListener {
      */
     public Button getPositiveButton() throws NullPointerException {
         if (dialog == null || !dialog.isShowing()) {
-            throw new NullPointerException("Dialog is null or not showing. Call this particular method after the colorpicker.show() is called.");
+            throw new NullPointerException("Dialog is null or not showing. Call this particular method after the colorPickerDialog.show() is called.");
         }
         positiveButton = ((AlertDialog) dialog).getButton(DialogInterface.BUTTON_POSITIVE);
         return positiveButton;
@@ -392,7 +392,7 @@ public class ColorPickerDialog implements OnColorItemClickListener {
      */
     public Button getNegativeButton() throws NullPointerException {
         if (dialog == null || !dialog.isShowing()) {
-            throw new NullPointerException("Dialog is null or not showing. Call this particular method after the colorpicker.show() is called.");
+            throw new NullPointerException("Dialog is null or not showing. Call this particular method after the colorPickerDialog.show() is called.");
         }
         negativeButton = ((AlertDialog) dialog).getButton(DialogInterface.BUTTON_NEGATIVE);
         return negativeButton;
@@ -407,7 +407,7 @@ public class ColorPickerDialog implements OnColorItemClickListener {
     public TextView getDialogTitle() throws NullPointerException {
         int titleId = context.getResources().getIdentifier("alertTitle", "id", "android");
         if (dialog.findViewById(titleId) == null) {
-            throw new NullPointerException("Dialog is null or not showing. Call this particular method after the colorpicker.show() is called.");
+            throw new NullPointerException("Dialog is null or not showing. Call this particular method after the colorPickerDialog.show() is called.");
         }
         return dialog.findViewById(titleId);
     }
@@ -419,7 +419,7 @@ public class ColorPickerDialog implements OnColorItemClickListener {
      */
     public Dialog getDialog() throws NullPointerException {
         if (dialog == null) {
-            throw new NullPointerException("Dialog is null. Call this particular method after the colorpicker.show() is called.");
+            throw new NullPointerException("Dialog is null. Call this particular method after the colorPickerDialog.show() is called.");
         }
         return dialog;
     }

@@ -29,6 +29,7 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import androidx.appcompat.widget.AppCompatImageView;
 
@@ -48,6 +49,7 @@ public class ColorPickerPopUp extends View implements ViewTreeObserver.OnGlobalL
     private final AppCompatImageView cursorColorPicker;
     private final ColorPickerView colorPickerView;
     private final RelativeLayout colorPickerRelLayout;
+    private final RelativeLayout colorPickerBaseLayout;
     private final AppCompatImageView hueImageView;
     private final AppCompatImageView alphaImageView;
     private final AppCompatImageView cursorHue;
@@ -77,6 +79,7 @@ public class ColorPickerPopUp extends View implements ViewTreeObserver.OnGlobalL
         cursorColorPicker = dialogView.findViewById(R.id.cursor_colorpicker);
         colorPickerView = dialogView.findViewById(R.id.colorPickerView);
         colorPickerRelLayout = dialogView.findViewById(R.id.colorPickerRelLayout);
+        colorPickerBaseLayout = dialogView.findViewById(R.id.colorPickerBaseLayout);
         hueImageView = dialogView.findViewById(R.id.hueImageView);
         alphaImageView = dialogView.findViewById(R.id.alphaImageView);
         cursorHue = dialogView.findViewById(R.id.cursor_hue);
@@ -131,6 +134,9 @@ public class ColorPickerPopUp extends View implements ViewTreeObserver.OnGlobalL
                 .setCancelable(true);
         dialog = builder.create();
         dialog.show();
+
+        positiveButton = ((AlertDialog) dialog).getButton(DialogInterface.BUTTON_POSITIVE);
+        negativeButton = ((AlertDialog) dialog).getButton(DialogInterface.BUTTON_NEGATIVE);
 
         ViewTreeObserver viewTreeObserver = dialogView.getViewTreeObserver();
         viewTreeObserver.addOnGlobalLayoutListener(this);
@@ -203,9 +209,10 @@ public class ColorPickerPopUp extends View implements ViewTreeObserver.OnGlobalL
                 y = alphaImageView.getMeasuredHeight() - 0.01f;     // subtracted 0.01f to avoid cursor jumping from bottom to top.
             }
             this.alpha = Math.round(255f - ((255f / alphaImageView.getMeasuredHeight()) * y));
-            int alphaColor = this.alpha << 24 | getCurrentColor() & 0x00FFFFFF;
+            // see javadoc of getCurrentColor().
+            selectedColor = this.alpha << 24 | getCurrentColor() & 0x00FFFFFF;
             moveCursorAlpha();
-            viewNewColor.setBackgroundColor(alphaColor);
+            viewNewColor.setBackgroundColor(selectedColor);
             return true;
         }
         return false;
@@ -409,5 +416,121 @@ public class ColorPickerPopUp extends View implements ViewTreeObserver.OnGlobalL
     public ColorPickerPopUp setShowAlpha(boolean showAlpha) {
         this.showAlpha = showAlpha;
         return this;
+    }
+
+    /**
+     * Sets the title of dialog box. Default title is "Choose Color".
+     *
+     * @param dialogTitle (Title of dialog box)
+     * @return this
+     */
+    public ColorPickerPopUp setDialogTitle(String dialogTitle) {
+        this.dialogTitle = dialogTitle;
+        return this;
+    }
+
+    /**
+     * Sets the Positive button text of dialog box. Default text is "Ok".
+     *
+     * @param dialogPositiveButtonText (Positive button text)
+     * @return this
+     */
+    public ColorPickerPopUp setPositiveButtonText(String dialogPositiveButtonText) {
+        this.dialogPositiveButtonText = dialogPositiveButtonText;
+        return this;
+    }
+
+    /**
+     * Sets the Negative button text of dialog box. Default text is "Cancel".
+     *
+     * @param dialogNegativeButtonText (Negative button text)
+     * @return this
+     */
+    public ColorPickerPopUp setNegativeButtonText(String dialogNegativeButtonText) {
+        this.dialogNegativeButtonText = dialogNegativeButtonText;
+        return this;
+    }
+
+    /**
+     * Get the positive button from dialog box.
+     * This method may throw NullPointerException if the dialog box is not showing on screen.
+     *
+     * @return positiveButton
+     * @throws NullPointerException (if the dialog is null or dialog is not showing).
+     */
+    public Button getPositiveButton() throws NullPointerException {
+        if (dialog == null || !dialog.isShowing()) {
+            throw new NullPointerException("Dialog is null or not showing. Call this particular method after the colorPickerPopUp.show() is called.");
+        }
+        positiveButton = ((AlertDialog) dialog).getButton(DialogInterface.BUTTON_POSITIVE);
+        return positiveButton;
+    }
+
+    /**
+     * Get the negative button from dialog box.
+     * This method may throw NullPointerException if the dialog box is not showing on screen.
+     *
+     * @return negativeButton
+     * @throws NullPointerException (if the dialog is null or dialog is not showing).
+     */
+    public Button getNegativeButton() throws NullPointerException {
+        if (dialog == null || !dialog.isShowing()) {
+            throw new NullPointerException("Dialog is null or not showing. Call this particular method after the colorPickerPopUp.show() is called.");
+        }
+        negativeButton = ((AlertDialog) dialog).getButton(DialogInterface.BUTTON_NEGATIVE);
+        return negativeButton;
+    }
+
+    /**
+     * Get the dialog title for customising it.
+     * This method may throw NullPointerException if the dialog box is not showing on screen.
+     *
+     * @return dialogTitle (String)
+     */
+    public TextView getDialogTitle() throws NullPointerException {
+        int titleId = context.getResources().getIdentifier("alertTitle", "id", "android");
+        if (dialog == null || !dialog.isShowing()) {
+            throw new NullPointerException("Dialog is null or not showing. Call this particular method after the colorPickerPopUp.show() is called.");
+        }
+        return dialog.findViewById(titleId);
+    }
+
+    /**
+     * Get dialog for more control over dialog.
+     *
+     * @return dialog
+     */
+    public Dialog getDialog() throws NullPointerException {
+        if (dialog == null) {
+            throw new NullPointerException("Dialog is null. Call this particular method after the colorPickerPopUp.show() is called.");
+        }
+        return dialog;
+    }
+
+    /**
+     * Get the view inflated in dialog box.
+     *
+     * @return dialogView
+     */
+    public View getDialogView() {
+        return dialogView;
+    }
+
+    /**
+     * Get the base/parent layout of dialog view for more customizations.
+     *
+     * @return relativeLayout (colorPaletteRelLayout)
+     */
+    public RelativeLayout getDialogBaseLayout() {
+        return colorPickerBaseLayout;
+    }
+
+    /**
+     * Dismiss the dialog if it's visible on screen.
+     */
+    public void dismissDialog() {
+        if (dialog != null && dialog.isShowing()) {
+            dialog.dismiss();
+        }
     }
 }
