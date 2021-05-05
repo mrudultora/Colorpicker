@@ -17,6 +17,7 @@ limitations under the License.
 package com.mrudultora.colorpickerapp;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -38,7 +39,7 @@ import com.mrudultora.colorpicker.ColorPickerPopUp;
 public class ColorPickerPopUpFragment extends Fragment {
     AppCompatButton btnColorPickerPopup;
     ColorPickerPopUp colorPickerPopUp;
-    int defaultColor;
+    int defaultColor = Color.parseColor("#D9FF0089");
     TabLayout tabLayout;
     MainActivity mainActivity;
 
