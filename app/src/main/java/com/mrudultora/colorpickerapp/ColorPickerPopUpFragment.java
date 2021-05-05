@@ -17,9 +17,11 @@ limitations under the License.
 package com.mrudultora.colorpickerapp;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -92,5 +94,11 @@ public class ColorPickerPopUpFragment extends Fragment {
 //        colorPickerPopUp.getDialogTitle().setTextColor(Color.RED);
 //        colorPickerPopUp.getPositiveButton().setTextColor(Color.BLUE);
 
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        tabLayout = mainActivity.tabLayout;
     }
 }

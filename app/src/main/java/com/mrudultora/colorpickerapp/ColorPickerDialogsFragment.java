@@ -224,4 +224,9 @@ public class ColorPickerDialogsFragment extends Fragment {
         bottomSheetDialog.show();
     }
 
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        tabLayout = mainActivity.tabLayout;
+    }
 }
