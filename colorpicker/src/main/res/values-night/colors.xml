@@ -38,5 +38,6 @@ limitations under the License.
 
     <!-- BottomSheet Divider Color -->
     <color name="dividerColor">#484545</color>
+    <color name="arrow_color">#E7E0E0</color>
 
 </resources>

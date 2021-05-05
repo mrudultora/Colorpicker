@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
 Copyright 2020 Mrudul Tora <mrudultora@gmail.com>
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -62,6 +61,17 @@ limitations under the License.
         android:layout_below="@id/btnBottomSheet"
         android:layout_centerHorizontal="true"
         android:text="Open Direct Bottom Sheet DialogBox"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="17sp" />
+
+    <Button
+        android:id="@+id/btnColorPickerPopup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btnDirectBottomSheet"
+        android:layout_centerHorizontal="true"
+        android:text="Open ColorPicker Popup"
         android:textAllCaps="false"
         android:textColor="@color/white"
         android:textSize="17sp" />

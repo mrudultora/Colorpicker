@@ -17,6 +17,7 @@ limitations under the License.
 package com.mrudultora.colorpickerapp;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -26,6 +27,8 @@ import android.view.View;
 import android.widget.Button;
 
 import com.mrudultora.colorpicker.ColorPickerBottomSheetDialog;
+import com.mrudultora.colorpicker.ColorPickerPopUp;
+import com.mrudultora.colorpicker.ColorPickerView;
 import com.mrudultora.colorpicker.listeners.OnDirectSelectColorListener;
 import com.mrudultora.colorpicker.listeners.OnSelectColorListener;
 import com.mrudultora.colorpicker.util.ColorItemShape;
@@ -36,18 +39,22 @@ import com.mrudultora.colorpicker.ColorPickerDialog;
  */
 public class MainActivity extends AppCompatActivity {
     int defaultColor;
-    Button btnDialogBox, btnDirectDialogBox, btnBottomSheet, btnDirectBottomSheet;
+    Button btnDialogBox, btnDirectDialogBox, btnBottomSheet, btnDirectBottomSheet, btnColorPickerPopup;
     ColorPickerDialog colorPickerDialog;
     ColorPickerBottomSheetDialog bottomSheetDialog;
+    ColorPickerView colorPickerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         btnDialogBox = findViewById(R.id.btnDialogBox);
         btnDirectDialogBox = findViewById(R.id.btnDirectDialogBox);
         btnBottomSheet = findViewById(R.id.btnBottomSheet);
         btnDirectBottomSheet = findViewById(R.id.btnDirectBottomSheet);
+        btnColorPickerPopup = findViewById(R.id.btnColorPickerPopup);
+        colorPickerView = findViewById(R.id.colorPickerView);
         btnDialogBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -70,6 +77,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 selectDirectBottomSheet();
+            }
+        });
+        btnColorPickerPopup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ColorPickerPopUp colorPickerPopUp = new ColorPickerPopUp(MainActivity.this);
+                colorPickerPopUp.setDefaultColor(Color.parseColor("#D900FF00"));
+                colorPickerPopUp.show();
             }
         });
     }

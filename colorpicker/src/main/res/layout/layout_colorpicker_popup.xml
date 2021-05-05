@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center">
+
+    <RelativeLayout
+        android:id="@+id/colorPickerRelLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:paddingLeft="@dimen/colorpicker_padding_right_left"
+        android:paddingTop="@dimen/colorpicker_padding_top_bottom"
+        android:paddingRight="@dimen/colorpicker_padding_right_left"
+        android:paddingBottom="@dimen/colorpicker_padding_top_bottom">
+
+        <com.mrudultora.colorpicker.ColorPickerView
+            android:id="@+id/colorPickerView"
+            android:layout_width="@dimen/colorpicker_view_width"
+            android:layout_height="@dimen/colorpicker_view_height" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/hueImageView"
+            android:layout_width="@dimen/hue_view_width"
+            android:layout_height="@dimen/hue_view_height"
+            android:layout_marginLeft="@dimen/colorpicker_spacing"
+            android:layout_toRightOf="@id/colorPickerView"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_hue_colorpicker" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/alphaImageView"
+            android:layout_width="@dimen/alpha_view_width"
+            android:layout_height="@dimen/alpha_view_height"
+            android:layout_marginLeft="@dimen/colorpicker_spacing"
+            android:layout_toRightOf="@id/hueImageView"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_alpha_colorpicker" />
+
+        <!-- It would be used for color overlay on the alpha check board -->
+        <View
+            android:id="@+id/alpha_overlay"
+            android:layout_width="@dimen/alpha_view_width"
+            android:layout_height="@dimen/alpha_view_height"
+            android:layout_marginLeft="@dimen/colorpicker_spacing"
+            android:layout_toRightOf="@id/hueImageView" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/cursor_colorpicker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_cursor_colorpicker"
+            app:elevation="4dp" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/cursor_hue"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_cursor_hue_alpha"
+            app:elevation="4dp" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/cursor_alpha"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_cursor_hue_alpha"
+            app:elevation="4dp" />
+
+        <LinearLayout
+            android:id="@+id/colorPickerLinearLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/colorPickerView"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/colorpicker_margin_linearlayout"
+            android:gravity="left"
+            android:orientation="horizontal">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/checkeredOldColor"
+                    android:layout_width="60dp"
+                    android:layout_height="30dp"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/ic_alpha_colorpicker" />
+
+                <View
+                    android:id="@+id/viewOldColor"
+                    android:layout_width="60dp"
+                    android:layout_height="30dp"
+                    android:background="@color/color6" />
+
+            </RelativeLayout>
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="60dp"
+                android:layout_height="30dp"
+                android:paddingLeft="@dimen/arrow_padding"
+                android:paddingRight="@dimen/arrow_padding"
+                android:src="@drawable/ic_right_arrow_24" />
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/checkeredNewColor"
+                    android:layout_width="60dp"
+                    android:layout_height="30dp"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/ic_alpha_colorpicker" />
+
+                <View
+                    android:id="@+id/viewNewColor"
+                    android:layout_width="60dp"
+                    android:layout_height="30dp"
+                    android:background="@color/color6" />
+            </RelativeLayout>
+        </LinearLayout>
+    </RelativeLayout>
+</RelativeLayout>

@@ -38,4 +38,8 @@ limitations under the License.
     <!-- BottomSheet Divider Color -->
     <color name="dividerColor">#B5A9A9</color>
 
+    <!-- ColorPickerPopUp colors -->
+    <color name="cursor_color">#A09F9F</color>
+    <color name="arrow_color">#181717</color>
+
 </resources>
