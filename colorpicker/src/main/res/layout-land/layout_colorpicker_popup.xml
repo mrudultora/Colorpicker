@@ -31,10 +31,67 @@ limitations under the License.
         android:paddingRight="@dimen/colorpicker_padding_right_left"
         android:paddingBottom="@dimen/colorpicker_padding_top_bottom">
 
+        <LinearLayout
+            android:id="@+id/colorPickerLinearLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/colorpicker_margin_linearlayout"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/checkeredOldColor"
+                    android:layout_width="60dp"
+                    android:layout_height="30dp"
+                    android:background="@drawable/ic_border_background"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/ic_alpha_colorpicker" />
+
+                <View
+                    android:id="@+id/viewOldColor"
+                    android:layout_width="60dp"
+                    android:layout_height="30dp"
+                    android:background="@color/color6" />
+
+            </RelativeLayout>
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="60dp"
+                android:layout_height="30dp"
+                android:paddingLeft="@dimen/arrow_padding"
+                android:paddingRight="@dimen/arrow_padding"
+                android:rotation="90"
+                android:src="@drawable/ic_right_arrow_24" />
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/checkeredNewColor"
+                    android:layout_width="60dp"
+                    android:layout_height="30dp"
+                    android:background="@drawable/ic_border_background"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/ic_alpha_colorpicker" />
+
+                <View
+                    android:id="@+id/viewNewColor"
+                    android:layout_width="60dp"
+                    android:layout_height="30dp"
+                    android:background="@color/color6" />
+            </RelativeLayout>
+        </LinearLayout>
+
         <com.mrudultora.colorpicker.ColorPickerView
             android:id="@+id/colorPickerView"
             android:layout_width="@dimen/colorpicker_view_width"
             android:layout_height="@dimen/colorpicker_view_height"
+            android:layout_toRightOf="@id/colorPickerLinearLayout"
             android:background="@drawable/ic_border_background" />
 
         <androidx.appcompat.widget.AppCompatImageView
@@ -88,62 +145,5 @@ limitations under the License.
             android:scaleType="fitXY"
             android:src="@drawable/ic_cursor_hue_alpha"
             app:elevation="4dp" />
-
-        <LinearLayout
-            android:id="@+id/colorPickerLinearLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/colorPickerView"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="@dimen/colorpicker_margin_linearlayout"
-            android:gravity="left"
-            android:orientation="horizontal">
-
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/checkeredOldColor"
-                    android:layout_width="60dp"
-                    android:layout_height="30dp"
-                    android:background="@drawable/ic_border_background"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/ic_alpha_colorpicker" />
-
-                <View
-                    android:id="@+id/viewOldColor"
-                    android:layout_width="60dp"
-                    android:layout_height="30dp"
-                    android:background="@color/color6" />
-
-            </RelativeLayout>
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="60dp"
-                android:layout_height="30dp"
-                android:paddingLeft="@dimen/arrow_padding"
-                android:paddingRight="@dimen/arrow_padding"
-                android:src="@drawable/ic_right_arrow_24" />
-
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/checkeredNewColor"
-                    android:layout_width="60dp"
-                    android:layout_height="30dp"
-                    android:background="@drawable/ic_border_background"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/ic_alpha_colorpicker" />
-
-                <View
-                    android:id="@+id/viewNewColor"
-                    android:layout_width="60dp"
-                    android:layout_height="30dp"
-                    android:background="@color/color6" />
-            </RelativeLayout>
-        </LinearLayout>
     </RelativeLayout>
 </RelativeLayout>

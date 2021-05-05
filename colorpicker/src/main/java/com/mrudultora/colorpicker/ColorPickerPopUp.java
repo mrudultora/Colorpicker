@@ -1,3 +1,19 @@
+/*
+Copyright 2021 Mrudul Tora <mrudultora@gmail.com>
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+   https://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+ */
+
 package com.mrudultora.colorpicker;
 
 import android.annotation.SuppressLint;
@@ -5,6 +21,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
@@ -19,7 +36,14 @@ import androidx.appcompat.widget.AppCompatImageView;
 import com.mrudultora.colorpicker.listeners.OnDirectSelectColorListener;
 import com.mrudultora.colorpicker.listeners.OnSelectColorListener;
 
-public class ColorPickerPopUp implements ViewTreeObserver.OnGlobalLayoutListener, View.OnTouchListener {
+/**
+ * A ColorPicker pop up to choose any color with or without alpha.
+ * Uses ColorPickerView inside. Supports both portrait and landscape orientation.
+ *
+ * @author Mrudul Tora (mrudultora@gmail.com)
+ * @since 6 May, 2021
+ */
+public class ColorPickerPopUp extends View implements ViewTreeObserver.OnGlobalLayoutListener, View.OnTouchListener {
     private final Context context;
     private final View dialogView;
     private final View alphaOverlay;
@@ -32,12 +56,11 @@ public class ColorPickerPopUp implements ViewTreeObserver.OnGlobalLayoutListener
     private final AppCompatImageView alphaImageView;
     private final AppCompatImageView cursorHue;
     private final AppCompatImageView cursorAlpha;
+    private OnPickColorListener pickColorListener;
     private boolean showAlpha = true;
     private String dialogTitle;
     private String dialogPositiveButtonText;
     private String dialogNegativeButtonText;
-    private OnDirectSelectColorListener directSelectColorListener;
-    private OnSelectColorListener selectColorListener;
     private Dialog dialog;
     private Button positiveButton;
     private Button negativeButton;
@@ -45,7 +68,14 @@ public class ColorPickerPopUp implements ViewTreeObserver.OnGlobalLayoutListener
     private int alpha = 255;
     private float[] currentColorsHSV = new float[]{1f, 1f, 1f};
 
+    public interface OnPickColorListener {
+        void onColorPicked(int color);
+
+        void onCancel();
+    }
+
     public ColorPickerPopUp(Context context) {
+        super(context);
         this.context = context;
         dialogView = LayoutInflater.from(context).inflate(R.layout.layout_colorpicker_popup, null, false);
         cursorColorPicker = dialogView.findViewById(R.id.cursor_colorpicker);
@@ -65,15 +95,17 @@ public class ColorPickerPopUp implements ViewTreeObserver.OnGlobalLayoutListener
 
     @SuppressLint("ClickableViewAccessibility")
     public void show() {
+        if (selectedColor == Integer.MAX_VALUE) {
+            selectedColor = Color.HSVToColor(currentColorsHSV);
+        }
         if (!showAlpha) {
             alphaImageView.setVisibility(View.GONE);
             alphaOverlay.setVisibility(View.GONE);
             cursorAlpha.setVisibility(View.GONE);
+            selectedColor = selectedColor | 0xff000000;
+        } else {
+            alpha = Color.alpha(selectedColor);
         }
-        if (selectedColor == Integer.MAX_VALUE) {
-            selectedColor = Color.HSVToColor(currentColorsHSV);
-        }
-        alpha = Color.alpha(selectedColor);
         Color.colorToHSV(selectedColor, currentColorsHSV);
         viewNewColor.setBackgroundColor(selectedColor);
         viewOldColor.setBackgroundColor(selectedColor);
@@ -84,7 +116,7 @@ public class ColorPickerPopUp implements ViewTreeObserver.OnGlobalLayoutListener
                 .setPositiveButton(dialogPositiveButtonText, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-
+                        pickColorListener.onColorPicked(selectedColor);
                     }
                 })
                 .setNegativeButton(dialogNegativeButtonText, new DialogInterface.OnClickListener() {
@@ -258,5 +290,15 @@ public class ColorPickerPopUp implements ViewTreeObserver.OnGlobalLayoutListener
         return motionEvent.getAction() == MotionEvent.ACTION_DOWN ||
                 motionEvent.getAction() == MotionEvent.ACTION_UP ||
                 motionEvent.getAction() == MotionEvent.ACTION_MOVE;
+    }
+
+    @Override
+    protected void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+    }
+
+    private void initializeUI() {
+
     }
 }

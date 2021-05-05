@@ -1,5 +1,5 @@
 /*
-Copyright 2020 Mrudul Tora <mrudultora@gmail.com>
+Copyright 2021 Mrudul Tora <mrudultora@gmail.com>
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -58,7 +58,9 @@ public class MainActivity extends AppCompatActivity {
         btnDialogBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                selectColorDialog();
+//                selectColorDialog();
+                ColorPickerPopUp colorPickerPopUp = new ColorPickerPopUp(MainActivity.this);
+                colorPickerPopUp.show();
             }
         });
         btnDirectDialogBox.setOnClickListener(new View.OnClickListener() {

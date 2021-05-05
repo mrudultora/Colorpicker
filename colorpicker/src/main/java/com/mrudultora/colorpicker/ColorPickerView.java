@@ -1,5 +1,5 @@
 /*
-Copyright 2020 Mrudul Tora <mrudultora@gmail.com>
+Copyright 2021 Mrudul Tora <mrudultora@gmail.com>
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ import androidx.annotation.Nullable;
 
 /**
  * This ColorPickerView extends View class.
- * Here, we have used two Shader objects. One for horizontal gradient and one for vertical gradient.
+ * Here, I have used two Shader objects. One for horizontal gradient and one for vertical gradient.
  *
  * @author Mrudul Tora (mrudultora@gmail.com)
  * @since 6 May, 2021
