@@ -10,3 +10,10 @@
    <span class="badge-paypal"><a href="https://www.paypal.com/paypalme/mrudultora" title="Donate to this project using Paypal"><img src="https://img.shields.io/badge/paypal-donate-purple.svg" alt="Donate" /></a></span>
   [![Twitter](https://img.shields.io/twitter/url/https/twitter.com/mrudultora24.svg?style=social&label=Follow%20%40mrudultora24)](https://twitter.com/mrudultora24)
 </div>
+
+## Highlights
+
+• ColorPicker Popup (comes with ColorPickerView) to pick colors using Hue, Saturation and Value (HSV).<br>
+• ColorPicker AlertDialogs to choose color from the list of colors.<br>
+• ColorPicker BottomSheetDialogs to choose color from the list of colors.<br>
+• Supports Dark Mode as well as Landscape Orientation.<br>
