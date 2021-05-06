@@ -17,3 +17,10 @@
 • ColorPicker AlertDialogs to choose color from the list of colors.<br>
 • ColorPicker BottomSheetDialogs to choose color from the list of colors.<br>
 • Supports Dark Mode as well as Landscape Orientation.<br>
+
+# Demo
+
+<div align="center">  
+<img src="https://github.com/mrudultora/Colorpicker/blob/master/demo-art/colorpicker-dialogs.gif" alt="ColorPicker Dialogs" width="300" height="650">
+<img src="https://github.com/mrudultora/Colorpicker/blob/master/demo-art/colorpicker-popup.gif" alt="ColorPicker Dialogs" width="300" height="650">
+</div>
