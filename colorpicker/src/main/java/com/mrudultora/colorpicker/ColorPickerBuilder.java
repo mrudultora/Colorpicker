@@ -26,26 +26,27 @@ import com.mrudultora.colorpicker.util.ColorItemShape;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class ColorPickerBuilder {
+abstract public class ColorPickerBuilder<B extends ColorPickerBuilder<B>> {
 
-    private final Context context;
 
-    private int columns = 5;
-    private int defaultColor = 0;
-    private int itemDrawableRes = 0;
-    private int tickColor = Color.WHITE;
-    private ColorItemShape colorShape = ColorItemShape.SQUARE;
-    private ArrayList<ColorPaletteItemModel> colorsList = new ArrayList<>();
-    private HashMap<Integer, Integer> colorItems;
-    private String dialogTitle;
-    private String dialogPositiveButtonText;
-    private String dialogNegativeButtonText;
-    private OnDirectSelectColorListener directSelectColorListener;
-    private OnSelectColorListener selectColorListener;
-    private boolean cardSizeChanged = false;
-    private boolean tickSizeChanged = false;
-    private float tickSizeDimen = 0f;                 // when equals 0 (default used would be 24dp)
-    private float cardViewDimen = 0f;                 // when equals 0 (default used would be 45dp)
+    protected final Context context;
+
+    protected int columns = 5;
+    protected int defaultColor = 0;
+    protected int itemDrawableRes = 0;
+    protected int tickColor = Color.WHITE;
+    protected ColorItemShape colorShape = ColorItemShape.SQUARE;
+    protected ArrayList<ColorPaletteItemModel> colorsList = new ArrayList<>();
+    protected HashMap<Integer, Integer> colorItems;
+    protected String dialogTitle;
+    protected String dialogPositiveButtonText;
+    protected String dialogNegativeButtonText;
+    protected OnDirectSelectColorListener directSelectColorListener;
+    protected OnSelectColorListener selectColorListener;
+    protected boolean cardSizeChanged = false;
+    protected boolean tickSizeChanged = false;
+    protected float tickSizeDimen = 0f;                 // when equals 0 (default used would be 24dp)
+    protected float cardViewDimen = 0f;                 // when equals 0 (default used would be 45dp)
 
 
 
@@ -53,49 +54,26 @@ public class ColorPickerBuilder {
         this.context = context;
     }
 
-
-    public  ColorPickerDialog buildDialog() {
-        if (colorsList == null || colorsList.isEmpty()) {
-            setColors();
-        }
-        return new ColorPickerDialog(
-                context,
-                columns,
-                defaultColor,
-                itemDrawableRes,
-                tickColor,
-                colorShape,
-                colorsList,
-                colorItems,
-                dialogTitle,
-                dialogPositiveButtonText,
-                dialogNegativeButtonText,
-                directSelectColorListener,
-                selectColorListener,
-                cardSizeChanged,
-                tickSizeChanged,
-                tickSizeDimen,
-                cardViewDimen
-        );
+    private B getThis() {
+        return (B) this;
     }
-
 
     /**
      * On using OnSelectColorListener the dialog box would have the positive and negative buttons.
      * It would be fired on pressing either of the buttons.
      */
-    public ColorPickerBuilder setOnSelectColorListener(OnSelectColorListener selectColorListener) {
+    public B setOnSelectColorListener(OnSelectColorListener selectColorListener) {
         this.selectColorListener = selectColorListener;
-        return this;
+        return getThis();
     }
 
     /**
      * On using onDirectSelectColorListener the dialog box would not have the positive and negative buttons.
      * It would be fired as soon as a color is pressed.
      */
-    public ColorPickerBuilder setOnDirectSelectColorListener(OnDirectSelectColorListener directSelectColorListener) {
+    public B setOnDirectSelectColorListener(OnDirectSelectColorListener directSelectColorListener) {
         this.directSelectColorListener = directSelectColorListener;
-        return this;
+        return getThis();
     }
 
 
@@ -105,16 +83,16 @@ public class ColorPickerBuilder {
      *
      * @return this
      */
-    public ColorPickerBuilder setColors() {
+    public B setColors() {
         if (context == null) {
-            return this;
+            return getThis();
         }
         TypedArray typedArray = context.getResources().obtainTypedArray(R.array.default_colors);
         for (int i = 0; i < typedArray.length(); i++) {
             colorsList.add(new ColorPaletteItemModel(typedArray.getColor(i, 0), false));
         }
         typedArray.recycle();
-        return this;
+        return getThis();
     }
 
     /**
@@ -124,16 +102,16 @@ public class ColorPickerBuilder {
      * @param resId (Array resource)
      * @return this
      */
-    public ColorPickerBuilder setColors(int resId) {
+    public B setColors(int resId) {
         if (context == null) {
-            return this;
+            return getThis();
         }
         TypedArray typedArray = context.getResources().obtainTypedArray(resId);
         for (int i = 0; i < typedArray.length(); i++) {
             colorsList.add(new ColorPaletteItemModel(typedArray.getColor(i, 0), false));
         }
         typedArray.recycle();
-        return this;
+        return getThis();
     }
 
     /**
@@ -142,12 +120,12 @@ public class ColorPickerBuilder {
      * @param colorsHexList (ArrayList of Strings)
      * @return this
      */
-    public ColorPickerBuilder setColors(ArrayList<String> colorsHexList) {
+    public B setColors(ArrayList<String> colorsHexList) {
         for (String colors : colorsHexList) {
             int color = Color.parseColor(colors);
             colorsList.add(new ColorPaletteItemModel(color, false));
         }
-        return this;
+        return getThis();
     }
 
     /**
@@ -157,11 +135,11 @@ public class ColorPickerBuilder {
      * @param colors (list of colors int value)
      * @return this
      */
-    public ColorPickerBuilder setColors(int... colors) {
+    public B setColors(int... colors) {
         for (int color : colors) {
             colorsList.add(new ColorPaletteItemModel(color, false));
         }
-        return this;
+        return getThis();
     }
 
     /**
@@ -171,9 +149,9 @@ public class ColorPickerBuilder {
      * @param colorShape (shape of color item)
      * @return this
      */
-    public ColorPickerBuilder setColorItemShape(ColorItemShape colorShape) {
+    public B setColorItemShape(ColorItemShape colorShape) {
         this.colorShape = colorShape;
-        return this;
+        return getThis();
     }
 
     /**
@@ -183,9 +161,9 @@ public class ColorPickerBuilder {
      * @param itemDrawable (Drawable resource)
      * @return this
      */
-    public ColorPickerBuilder setColorItemDrawable(int itemDrawable) {
+    public B setColorItemDrawable(int itemDrawable) {
         this.itemDrawableRes = itemDrawable;
-        return this;
+        return getThis();
     }
 
     /**
@@ -194,9 +172,9 @@ public class ColorPickerBuilder {
      * @param columns (column count)
      * @return this
      */
-    public ColorPickerBuilder setColumns(int columns) {
+    public B setColumns(int columns) {
         this.columns = columns;
-        return this;
+        return getThis();
     }
 
     /**
@@ -206,9 +184,9 @@ public class ColorPickerBuilder {
      * @param defaultColor (default color int value)
      * @return this
      */
-    public ColorPickerBuilder setDefaultSelectedColor(int defaultColor) {
+    public B setDefaultSelectedColor(int defaultColor) {
         this.defaultColor = defaultColor;
-        return this;
+        return getThis();
     }
 
     /**
@@ -218,9 +196,9 @@ public class ColorPickerBuilder {
      * @param defaultColor (default color int value)
      * @return this
      */
-    public ColorPickerBuilder setDefaultSelectedColor(String defaultColor) {
+    public B setDefaultSelectedColor(String defaultColor) {
         this.defaultColor = Color.parseColor(defaultColor);
-        return this;
+        return getThis();
     }
 
     /**
@@ -230,9 +208,9 @@ public class ColorPickerBuilder {
      * @param tickColor (tick color on item in palette)
      * @return this
      */
-    public ColorPickerBuilder setTickColor(int tickColor) {
+    public B setTickColor(int tickColor) {
         this.tickColor = tickColor;
-        return this;
+        return getThis();
     }
 
     /**
@@ -243,13 +221,13 @@ public class ColorPickerBuilder {
      * @param tickColor (tick color on item in palette)
      * @return this
      */
-    public ColorPickerBuilder setTickColor(int tickColor, int... colorItems) {
+    public B setTickColor(int tickColor, int... colorItems) {
         this.tickColor = tickColor;
         this.colorItems = new HashMap<>();
         for (int item : colorItems) {
             this.colorItems.put(item, item);
         }
-        return this;
+        return getThis();
     }
 
     /**
@@ -258,9 +236,9 @@ public class ColorPickerBuilder {
      * @param dialogTitle (Title of dialog box)
      * @return this
      */
-    public ColorPickerBuilder setDialogTitle(String dialogTitle) {
+    public B setDialogTitle(String dialogTitle) {
         this.dialogTitle = dialogTitle;
-        return this;
+        return getThis();
     }
 
     /**
@@ -269,9 +247,9 @@ public class ColorPickerBuilder {
      * @param dialogPositiveButtonText (Positive button text)
      * @return this
      */
-    public ColorPickerBuilder setPositiveButtonText(String dialogPositiveButtonText) {
+    public B setPositiveButtonText(String dialogPositiveButtonText) {
         this.dialogPositiveButtonText = dialogPositiveButtonText;
-        return this;
+        return getThis();
     }
 
     /**
@@ -280,9 +258,9 @@ public class ColorPickerBuilder {
      * @param dialogNegativeButtonText (Negative button text)
      * @return this
      */
-    public ColorPickerBuilder setNegativeButtonText(String dialogNegativeButtonText) {
+    public B setNegativeButtonText(String dialogNegativeButtonText) {
         this.dialogNegativeButtonText = dialogNegativeButtonText;
-        return this;
+        return getThis();
     }
 
     /**
@@ -292,10 +270,10 @@ public class ColorPickerBuilder {
      * @param dimen (in dp)
      * @return this
      */
-    public ColorPickerBuilder setColorItemDimenInDp(int dimen) {
+    public B setColorItemDimenInDp(int dimen) {
         cardSizeChanged = true;
         this.cardViewDimen = dimen;
-        return this;
+        return getThis();
     }
 
     /**
@@ -304,10 +282,9 @@ public class ColorPickerBuilder {
      * @param dimen (in dp)
      * @return this
      */
-    public ColorPickerBuilder setTickDimenInDp(int dimen) {
+    public B setTickDimenInDp(int dimen) {
         tickSizeChanged = true;
         this.tickSizeDimen = dimen;
-        return this;
-
+        return getThis();
     }
 }

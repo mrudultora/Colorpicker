@@ -98,7 +98,7 @@ public class ColorPickerDialogsFragment extends Fragment {
     }
 
     public void selectColorDialog() {
-        colorPickerDialog = new ColorPickerBuilder(getActivity())
+        colorPickerDialog = new ColorPickerDialog.Builder(getActivity())
                 .setColors()
                 .setColumns(5)
                 .setDefaultSelectedColor(defaultColor)
@@ -120,7 +120,7 @@ public class ColorPickerDialogsFragment extends Fragment {
                         colorPickerDialog.dismissDialog();
                     }
                 })
-                .buildDialog();
+                .build();
 
 //        Some customizations can be done in below ways.
 
@@ -133,7 +133,7 @@ public class ColorPickerDialogsFragment extends Fragment {
     }
 
     public void selectDirectColorDialog() {
-        colorPickerDialog = new ColorPickerBuilder(getActivity())
+        colorPickerDialog = new ColorPickerDialog.Builder(getActivity())
                 .setColors()
                 .setColumns(5)
                 .setDefaultSelectedColor(defaultColor)
@@ -151,7 +151,7 @@ public class ColorPickerDialogsFragment extends Fragment {
                         tabLayout.setBackgroundColor(color);
                     }
                 })
-                .buildDialog();
+                .build();
 
 //        Some customizations can be done in below ways.
 

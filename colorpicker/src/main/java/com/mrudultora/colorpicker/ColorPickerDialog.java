@@ -278,4 +278,37 @@ public class ColorPickerDialog implements OnColorItemClickListener {
             dialog.dismiss();
         }
     }
+
+    public static class Builder extends ColorPickerBuilder<Builder> {
+
+        public Builder(Context context) {
+            super(context);
+        }
+
+        public ColorPickerDialog build() {
+            return new ColorPickerDialog(
+                    context,
+                    columns,
+                    defaultColor,
+                    itemDrawableRes,
+                    tickColor,
+                    colorShape,
+                    colorsList,
+                    colorItems,
+                    dialogTitle,
+                    dialogPositiveButtonText,
+                    dialogNegativeButtonText,
+                    directSelectColorListener,
+                    selectColorListener,
+                    cardSizeChanged,
+                    tickSizeChanged,
+                    tickSizeDimen,
+                    cardViewDimen
+            );
+        }
+
+        public void show() {
+            build().show();
+        }
+    }
 }
