@@ -1,5 +1,5 @@
 # <div align="center">Colorpicker Library for Android</div>
-<div align="center">Simple, maintained and highly customizable color picker library for Android. It is packed, ColorPicker Popup, Colorpicker dialogs and ColorPicker BottomSheet dialogs. ColorPicker Popup supports alpha and uses HSV (behind the scene) and allows you set your defaults. It supports Dark Mode and Material Theme and uses AndroidX. 🎨</div>
+<div align="center">Simple, maintained and highly customizable color picker library for Android. It is packed with ColorPicker Popup, Colorpicker dialogs and ColorPicker BottomSheet dialogs. ColorPicker Popup supports alpha and uses HSV (behind the scene) and allows you to set your defaults. It supports Dark Mode and Material Theme and uses AndroidX. 🎨</div>
 <br>
 <div align="center">
   
@@ -65,8 +65,8 @@ ColorPickerPopUp colorPickerPopUp = new ColorPickerPopUp(context);	// Pass the c
                     public void onCancel() {
                         colorPickerPopUp.dismissDialog();	// Dismiss the dialog.
                     }
-                });
-        colorPickerPopUp.show();
+                })
+		.show();
 ```
 **• ColorPickerDialog**
 ```java
@@ -85,7 +85,8 @@ ColorPickerDialog colorPickerDialog = new ColorPickerDialog(context);   // Pass 
                     public void cancel() {
                         colorPickerDialog.dismissDialog();	// Dismiss the dialog.
                     }
-                }).show();
+                })
+		.show();
 ```
 **• ColorPickerBottomSheetDialog**
 ```java
@@ -104,7 +105,8 @@ ColorPickerBottomSheetDialog bottomSheetDialog = new ColorPickerBottomSheetDialo
                     public void cancel() {
                         bottomSheetDialog.dismissDialog();     // Dismiss the dialog.
                     }
-                }).show();
+                })
+		.show();
 ```
 ## Customization🎨
 • You can change the text of Title, Positive and Negative Buttons directly from the strings.xml by adding following parameters.
