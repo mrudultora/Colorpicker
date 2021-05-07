@@ -44,15 +44,24 @@ import java.util.HashMap;
  * @since 1 May, 2021
  */
 public class ColorPickerDialog implements OnColorItemClickListener {
+
+    private final Context context;
+
     private final RecyclerView recyclerViewColors;
     private final View dialogView;
     private final RelativeLayout colorPaletteRelLayout;
+    private Button positiveButton;
+    private Button negativeButton;
+
+    private Dialog dialog;
+
+    private ColorAdapter colorAdapter;
+
     private int columns = 5;
     private int defaultColor = 0;
     private int itemDrawableRes = 0;
     private int tickColor = Color.WHITE;
     private ColorItemShape colorShape = ColorItemShape.SQUARE;
-    private final Context context;
     private final ArrayList<ColorPaletteItemModel> colorsList;
     private HashMap<Integer, Integer> colorItems;
     private String dialogTitle;
@@ -60,10 +69,6 @@ public class ColorPickerDialog implements OnColorItemClickListener {
     private String dialogNegativeButtonText;
     private OnDirectSelectColorListener directSelectColorListener;
     private OnSelectColorListener selectColorListener;
-    private Dialog dialog;
-    private ColorAdapter colorAdapter;
-    private Button positiveButton;
-    private Button negativeButton;
     private int selectedColorPosition = -1;
     private boolean cardSizeChanged = false;
     private boolean tickSizeChanged = false;
