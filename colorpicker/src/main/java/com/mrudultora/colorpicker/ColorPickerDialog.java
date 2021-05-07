@@ -57,33 +57,64 @@ public class ColorPickerDialog implements OnColorItemClickListener {
 
     private ColorAdapter colorAdapter;
 
-    private int columns = 5;
-    private int defaultColor = 0;
-    private int itemDrawableRes = 0;
-    private int tickColor = Color.WHITE;
-    private ColorItemShape colorShape = ColorItemShape.SQUARE;
-    private final ArrayList<ColorPaletteItemModel> colorsList;
-    private HashMap<Integer, Integer> colorItems;
-    private String dialogTitle;
-    private String dialogPositiveButtonText;
-    private String dialogNegativeButtonText;
-    private OnDirectSelectColorListener directSelectColorListener;
-    private OnSelectColorListener selectColorListener;
     private int selectedColorPosition = -1;
-    private boolean cardSizeChanged = false;
-    private boolean tickSizeChanged = false;
-    private float tickSizeDimen = 0f;                 // when equals 0 (default used would be 24dp)
-    private float cardViewDimen = 0f;                 // when equals 0 (default used would be 45dp)
 
-    public ColorPickerDialog(Context context) {
+    private final int columns;
+    private final int defaultColor;
+    private final int itemDrawableRes;
+    private final int tickColor;
+    private final ColorItemShape colorShape;
+    private final ArrayList<ColorPaletteItemModel> colorsList;
+    private final HashMap<Integer, Integer> colorItems;
+    private final String dialogTitle;
+    private final String dialogPositiveButtonText;
+    private final String dialogNegativeButtonText;
+    private final OnDirectSelectColorListener directSelectColorListener;
+    private final OnSelectColorListener selectColorListener;
+    private final boolean cardSizeChanged;
+    private final boolean tickSizeChanged;
+    private final float tickSizeDimen;                 // when equals 0 (default used would be 24dp)
+    private final float cardViewDimen;                 // when equals 0 (default used would be 45dp)
+
+
+    public ColorPickerDialog(Context context,
+                             int columns,
+                             int defaultColor,
+                             int itemDrawableRes,
+                             int tickColor,
+                             ColorItemShape colorShape,
+                             ArrayList<ColorPaletteItemModel> colorsList,
+                             HashMap<Integer, Integer> colorItems,
+                             String dialogTitle,
+                             String dialogPositiveButtonText,
+                             String dialogNegativeButtonText,
+                             OnDirectSelectColorListener directSelectColorListener,
+                             OnSelectColorListener selectColorListener,
+                             boolean cardSizeChanged,
+                             boolean tickSizeChanged,
+                             float tickSizeDimen,
+                             float cardViewDimen) {
         this.context = context;
-        colorsList = new ArrayList<>();
-        dialogView = LayoutInflater.from(context).inflate(R.layout.layout_color_palette_dialog, null, false);
-        colorPaletteRelLayout = dialogView.findViewById(R.id.colorPaletteRelLayout);
-        recyclerViewColors = dialogView.findViewById(R.id.recyclerViewColors);
-        dialogTitle = context.getString(R.string.dialog_title);
-        dialogPositiveButtonText = context.getString(R.string.dialog_positive_button_text);
-        dialogNegativeButtonText = context.getString(R.string.dialog_negative_button_text);
+        this.columns = columns;
+        this.defaultColor = defaultColor;
+        this.itemDrawableRes = itemDrawableRes;
+        this.tickColor = tickColor;
+        this.colorShape = colorShape;
+        this.colorsList = colorsList;
+        this.colorItems = colorItems;
+        this.dialogTitle = dialogTitle != null ? dialogTitle : context.getString(R.string.dialog_title);
+        this.dialogPositiveButtonText = dialogPositiveButtonText != null ? dialogPositiveButtonText : context.getString(R.string.dialog_positive_button_text);
+        this.dialogNegativeButtonText = dialogNegativeButtonText != null ? dialogNegativeButtonText : context.getString(R.string.dialog_negative_button_text);
+        this.directSelectColorListener = directSelectColorListener;
+        this.selectColorListener = selectColorListener;
+        this.cardSizeChanged = cardSizeChanged;
+        this.tickSizeChanged = tickSizeChanged;
+        this.tickSizeDimen = tickSizeDimen;
+        this.cardViewDimen = cardViewDimen;
+
+        this.dialogView = LayoutInflater.from(context).inflate(R.layout.layout_color_palette_dialog, null, false);
+        this.colorPaletteRelLayout = dialogView.findViewById(R.id.colorPaletteRelLayout);
+        this.recyclerViewColors = dialogView.findViewById(R.id.recyclerViewColors);
     }
 
     @Override
@@ -102,9 +133,6 @@ public class ColorPickerDialog implements OnColorItemClickListener {
     public void show() {
         if (context == null) {
             return;
-        }
-        if (colorsList == null || colorsList.isEmpty()) {
-            setColors();
         }
         if (itemDrawableRes != 0) {
             colorAdapter = new ColorAdapter(colorsList, context, itemDrawableRes, this);
@@ -166,211 +194,6 @@ public class ColorPickerDialog implements OnColorItemClickListener {
             positiveButton.setVisibility(View.GONE);
             negativeButton.setVisibility(View.GONE);
         }
-    }
-
-    /**
-     * On using OnSelectColorListener the dialog box would have the positive and negative buttons.
-     * It would be fired on pressing either of the buttons.
-     */
-    public ColorPickerDialog setOnSelectColorListener(OnSelectColorListener selectColorListener) {
-        this.selectColorListener = selectColorListener;
-        return this;
-    }
-
-    /**
-     * On using onDirectSelectColorListener the dialog box would not have the positive and negative buttons.
-     * It would be fired as soon as a color is pressed.
-     */
-    public ColorPickerDialog setOnDirectSelectColorListener(OnDirectSelectColorListener directSelectColorListener) {
-        this.directSelectColorListener = directSelectColorListener;
-        return this;
-    }
-
-
-    /**
-     * Sets the colors from array defined in this library (arrays.xml).
-     * In total 15 default colors would be added.
-     *
-     * @return this
-     */
-    public ColorPickerDialog setColors() {
-        if (context == null) {
-            return this;
-        }
-        TypedArray typedArray = context.getResources().obtainTypedArray(R.array.default_colors);
-        for (int i = 0; i < typedArray.length(); i++) {
-            colorsList.add(new ColorPaletteItemModel(typedArray.getColor(i, 0), false));
-        }
-        typedArray.recycle();
-        return this;
-    }
-
-    /**
-     * Sets the colors from array defined in the arrays.xml of app.
-     * For example, see arrays.xml of this library.
-     *
-     * @param resId (Array resource)
-     * @return this
-     */
-    public ColorPickerDialog setColors(int resId) {
-        if (context == null) {
-            return this;
-        }
-        TypedArray typedArray = context.getResources().obtainTypedArray(resId);
-        for (int i = 0; i < typedArray.length(); i++) {
-            colorsList.add(new ColorPaletteItemModel(typedArray.getColor(i, 0), false));
-        }
-        typedArray.recycle();
-        return this;
-    }
-
-    /**
-     * Sets the colors from arrayList of hex values (strings).
-     *
-     * @param colorsHexList (ArrayList of Strings)
-     * @return this
-     */
-    public ColorPickerDialog setColors(ArrayList<String> colorsHexList) {
-        for (String colors : colorsHexList) {
-            int color = Color.parseColor(colors);
-            colorsList.add(new ColorPaletteItemModel(color, false));
-        }
-        return this;
-    }
-
-    /**
-     * Sets the colors from int values of colors.
-     * For example, Color.BLUE or Color.parseColor("#000000").
-     *
-     * @param colors (list of colors int value)
-     * @return this
-     */
-    public ColorPickerDialog setColors(int... colors) {
-        for (int color : colors) {
-            colorsList.add(new ColorPaletteItemModel(color, false));
-        }
-        return this;
-    }
-
-    /**
-     * Set the shape of color item. SQUARE and CIRCLE are the two shapes available.
-     * By default, SQUARE would be selected.
-     *
-     * @param colorShape (shape of color item)
-     * @return this
-     */
-    public ColorPickerDialog setColorItemShape(ColorItemShape colorShape) {
-        this.colorShape = colorShape;
-        return this;
-    }
-
-    /**
-     * Sets the drawable of item in color palette (for any shape other than square and circle are
-     * also allowed).
-     *
-     * @param itemDrawable (Drawable resource)
-     * @return this
-     */
-    public ColorPickerDialog setColorItemDrawable(int itemDrawable) {
-        this.itemDrawableRes = itemDrawable;
-        return this;
-    }
-
-    /**
-     * Set the value of columns. This value would be used in spanCount of GridLayoutManager.
-     *
-     * @param columns (column count)
-     * @return this
-     */
-    public ColorPickerDialog setColumns(int columns) {
-        this.columns = columns;
-        return this;
-    }
-
-    /**
-     * Sets the default color when dialog box pops up.
-     * Default color would have a tick mark on the color.
-     *
-     * @param defaultColor (default color int value)
-     * @return this
-     */
-    public ColorPickerDialog setDefaultSelectedColor(int defaultColor) {
-        this.defaultColor = defaultColor;
-        return this;
-    }
-
-    /**
-     * Sets the default color when dialog box pops up.
-     * Default color would have a tick mark on the color.
-     *
-     * @param defaultColor (default color int value)
-     * @return this
-     */
-    public ColorPickerDialog setDefaultSelectedColor(String defaultColor) {
-        this.defaultColor = Color.parseColor(defaultColor);
-        return this;
-    }
-
-    /**
-     * Sets the color of tick mark on item in color palette.
-     * Default color is white.
-     *
-     * @param tickColor (tick color on item in palette)
-     * @return this
-     */
-    public ColorPickerDialog setTickColor(int tickColor) {
-        this.tickColor = tickColor;
-        return this;
-    }
-
-    /**
-     * Sets the color of tick mark on particular items in color palette. These items would have
-     * the color passed in this method.
-     * Default color is white.
-     *
-     * @param tickColor (tick color on item in palette)
-     * @return this
-     */
-    public ColorPickerDialog setTickColor(int tickColor, int... colorItems) {
-        this.tickColor = tickColor;
-        this.colorItems = new HashMap<>();
-        for (int item : colorItems) {
-            this.colorItems.put(item, item);
-        }
-        return this;
-    }
-
-    /**
-     * Sets the title of dialog box. Default title is "Choose Color".
-     *
-     * @param dialogTitle (Title of dialog box)
-     * @return this
-     */
-    public ColorPickerDialog setDialogTitle(String dialogTitle) {
-        this.dialogTitle = dialogTitle;
-        return this;
-    }
-
-    /**
-     * Sets the Positive button text of dialog box. Default text is "Ok".
-     *
-     * @param dialogPositiveButtonText (Positive button text)
-     * @return this
-     */
-    public ColorPickerDialog setPositiveButtonText(String dialogPositiveButtonText) {
-        this.dialogPositiveButtonText = dialogPositiveButtonText;
-        return this;
-    }
-
-    /**
-     * Sets the Negative button text of dialog box. Default text is "Cancel".
-     *
-     * @param dialogNegativeButtonText (Negative button text)
-     * @return this
-     */
-    public ColorPickerDialog setNegativeButtonText(String dialogNegativeButtonText) {
-        this.dialogNegativeButtonText = dialogNegativeButtonText;
-        return this;
     }
 
     /**
@@ -454,31 +277,5 @@ public class ColorPickerDialog implements OnColorItemClickListener {
         if (dialog != null && dialog.isShowing()) {
             dialog.dismiss();
         }
-    }
-
-    /**
-     * Sets the height and width of color items in palette in dp.
-     * Default Value is 45dp
-     *
-     * @param dimen (in dp)
-     * @return this
-     */
-    public ColorPickerDialog setColorItemDimenInDp(int dimen) {
-        cardSizeChanged = true;
-        this.cardViewDimen = dimen;
-        return this;
-    }
-
-    /**
-     * Sets the tick mark size in dp. Default value is 24dp.
-     *
-     * @param dimen (in dp)
-     * @return this
-     */
-    public ColorPickerDialog setTickDimenInDp(int dimen) {
-        tickSizeChanged = true;
-        this.tickSizeDimen = dimen;
-        return this;
-
     }
 }
