@@ -140,6 +140,32 @@ ColorPickerDialog colorPickerDialog = new ColorPickerDialog(context);   // Pass 
                 })
 	.show();
 ```
+The array of 15 different default colors is as following. You can define your own in similar way.
+```xml  
+<!-- Array of default colors -->
+    <array name="default_colors">
+	    
+        <item>#f44236</item>
+        <item>#ea1e63</item>
+        <item>#9a28b1</item>
+        <item>#683ab7</item>
+        <item>#2F4FE3</item>
+	    
+        <item>#2295f0</item>
+        <item>#04a8f5</item>
+        <item>#00bed2</item>
+        <item>#009788</item>
+        <item>#4cb050</item>
+	    
+        <item>#ff9700</item>
+        <item>#FFC000</item>
+        <item>#D2E41D</item>
+        <item>#fe5722</item>
+        <item>#795547</item>	  
+    </array>
+
+```
+
 • You have options to choose from two types of listeners in case of dialogs. They are `OnSelectColorListener` and OnDirectSelectColorListener. First one works normally and is fired on pressing the buttons of dialog box. On setting the second one, i.e, `OnDirectSelectColorListener`, it will be fired as soon as any color is selected. If this is set in dialog then the positive and negative buttons would be hided (See the demo videos for more clear view on this).
 
 • You can change tick color (by default it would be white) on all the items in color palette of dialogs. This library also supports to change the tick color for some particular color items. This can be achieved as below:
@@ -151,7 +177,8 @@ ColorPickerBottomSheetDialog bottomSheetDialog = new ColorPickerBottomSheetDialo
 	.setTickColor(Color.BLUE)
 	
 	// Option 2: Set tick color for some particular items. 
-	.setTickColor(Color.YELLOW, Color.parseColor("#f44236"), Color.parseColor("#ff9700"), Color.parseColor("#4cb050"))
+	.setTickColor(Color.YELLOW, Color.parseColor("#f44236"), Color.parseColor("#ff9700"),
+			Color.parseColor("#4cb050"))
 	.show();
 ```
 • You can change shape of items in color palette. The library provides Square and Circle in-built. For other shapes, you can pass the drawable for that shape.
@@ -179,7 +206,37 @@ ColorPickerDialog colorPickerDialog = new ColorPickerDialog(getActivity());  // 
 ```
 • ColorPicker Popup also suppports similar features. You can pass the default color (with or without alpha). You can remove the support of alpha from the dialog box. It uses different layout for landscape, so you don't have to care about the UI look in landscape.
 
-**• Now, apart from these there are many other methods too. Some of the methods in which you are trying to get something from layout (for ex. `getPositiveButton()`), must be called after `show()` method. This is because these classes are wrapper over Android's AlertDialog class. So, some basic methods work similar to it and may throw `NullPointerException`.**
+• Now, apart from these there are many other methods too. Some of the methods in which you are trying to get something from layout (for ex. `getPositiveButton()`), must be called after `show()` method. This is because these classes are wrapper over Android's AlertDialog class. So, some basic methods work similar to it and may throw `NullPointerException`.
+
+## ColorPicker methods
+
+Remember to call getter methods after `show()` is called to avoid `NullPointerException`.
+
+| Methods | Return | Description |
+| --- | --- | --- |
+| getDialog() | Dialog | Get dialog for more control over it. This method may throw NullPointerException if the dialog box is not showing on screen. |
+| getDialogView() | View | Get the view inflated in dialog box. |
+| getDialogBaseLayout() | RelativeLayout | Get the base/parent layout of dialog view for more customizations. |
+| dismissDialog() | void | Dismiss the dialog if it's visible on screen. |
+| setColorItemDimenInDp(int dimen) | this | Sets the height and width of color items in palette in dp. Default Value is 45dp |
+| setTickDimenInDp(int dimen) | this | Sets the tick mark size in dp. Default value is 24dp. |
+| getDialogTitle() | TextView | Get the dialog title for customising it. This method may throw NullPointerException if the dialog box is not showing on screen. |
+| getNegativeButton() | Button | Get the negative button from dialog box. This method may throw NullPointerException if the dialog box is not showing on screen. |
+| getPositiveButton() | Button | Get the positive button from dialog box. This method may throw NullPointerException if the dialog box is not showing on screen. |
+| setColorItemShape(ColorItemShape colorShape) | this | Set the shape of color item. SQUARE and CIRCLE are the two shapes available. By default, SQUARE would be selected. |
+| setColorItemDrawable() | this | Sets the drawable of item in color palette (for any shape other than square and circle are also allowed). |
+| setColumns(int columns) | this | Set the value of columns. This value would be used in spanCount of GridLayoutManager. |
+| setDefaultSelectedColor(int defaultColor) | this | Sets the default color when dialog box pops up. Tick mark would have a default color. |
+| setTickColor(int tickColor) | this | Sets the color of tick mark on item in color palette. Default color is white. |
+| setTickColor(int tickColor, int... colorItems) | this | Sets the color of tick mark on particular items in color palette. These items would have the color passed in this method. Default color is white. |
+| setDialogTitle(String title) | this | Sets the title of dialog box. Default title is "Choose Color". |
+| setPositiveButtonText(String positiveText) | this | Sets the Positive button text of dialog box. Default text is "Ok". |
+| setNegativeButtonText(String negativeText) | this | Sets the Negative button text of dialog box. Default text is "Cancel". |
+| setShowAlpha(boolean showAlpha) | ColorPickerPopUp | Sets whether to show Alpha Channel or not. |
+| setDefaultColor(int defaultColor) | ColorPickerPopUp | Sets the default color in ColorPickerView, Hue and Alpha (if enabled). |
+| show() | void | Shows the dialog box on screen. |
+
+For more info regarding these methods, have a look at the <a href="https://mrudultora.github.io/libraries/ColorPicker/javadoc/colorpicker-javadoc.html">javadoc.</a>
 
 ## Let us Know
 It would be great if any of your apps uses this library. Please, do let me know about it on **mrudultora@gmail.com**. The list of the apps using this library would be updated soon. Your views, suggestions and feedbacks are welcomed. Also, feel free to open issues or contributing to this library.
