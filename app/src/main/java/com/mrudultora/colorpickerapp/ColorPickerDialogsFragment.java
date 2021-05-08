@@ -164,8 +164,8 @@ public class ColorPickerDialogsFragment extends Fragment {
     }
 
     public void selectBottomSheet() {
-        bottomSheetDialog = new ColorPickerBottomSheetDialog(getActivity());
-        bottomSheetDialog.setColors()
+        bottomSheetDialog = new ColorPickerBottomSheetDialog.Builder(getActivity())
+                .setColors()
                 .setColumns(6)
                 .setDefaultSelectedColor(defaultColor)
                 .setColorItemShape(ColorItemShape.CIRCLE)
@@ -186,7 +186,8 @@ public class ColorPickerDialogsFragment extends Fragment {
                     public void cancel() {
                         bottomSheetDialog.dismissDialog();
                     }
-                });
+                })
+                .build();
 
 //        Some customizations can be done in below ways.
 
@@ -198,8 +199,8 @@ public class ColorPickerDialogsFragment extends Fragment {
     }
 
     public void selectDirectBottomSheet() {
-        bottomSheetDialog = new ColorPickerBottomSheetDialog(getActivity());
-        bottomSheetDialog.setColors()
+        bottomSheetDialog = new ColorPickerBottomSheetDialog.Builder(getActivity())
+                .setColors()
                 .setColumns(6)
                 .setDefaultSelectedColor(defaultColor)
                 .setColorItemShape(ColorItemShape.SQUARE)
@@ -214,7 +215,8 @@ public class ColorPickerDialogsFragment extends Fragment {
                         defaultColor = color;
                         tabLayout.setBackgroundColor(color);
                     }
-                });
+                })
+                .build();
 
 //        Some customizations can be done in below ways.
 
