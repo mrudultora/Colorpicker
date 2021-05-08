@@ -32,6 +32,7 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.tabs.TabLayout;
 import com.mrudultora.colorpicker.ColorPickerBottomSheetDialog;
+import com.mrudultora.colorpicker.ColorPickerBuilder;
 import com.mrudultora.colorpicker.ColorPickerDialog;
 import com.mrudultora.colorpicker.listeners.OnDirectSelectColorListener;
 import com.mrudultora.colorpicker.listeners.OnSelectColorListener;
@@ -97,8 +98,8 @@ public class ColorPickerDialogsFragment extends Fragment {
     }
 
     public void selectColorDialog() {
-        colorPickerDialog = new ColorPickerDialog(getActivity());
-        colorPickerDialog.setColors()
+        colorPickerDialog = new ColorPickerDialog.Builder(getActivity())
+                .setColors()
                 .setColumns(5)
                 .setDefaultSelectedColor(defaultColor)
                 .setColorItemShape(ColorItemShape.CIRCLE)
@@ -118,7 +119,8 @@ public class ColorPickerDialogsFragment extends Fragment {
                     public void cancel() {
                         colorPickerDialog.dismissDialog();
                     }
-                });
+                })
+                .build();
 
 //        Some customizations can be done in below ways.
 
@@ -131,8 +133,8 @@ public class ColorPickerDialogsFragment extends Fragment {
     }
 
     public void selectDirectColorDialog() {
-        colorPickerDialog = new ColorPickerDialog(getActivity());
-        colorPickerDialog.setColors()
+        colorPickerDialog = new ColorPickerDialog.Builder(getActivity())
+                .setColors()
                 .setColumns(5)
                 .setDefaultSelectedColor(defaultColor)
                 .setColorItemShape(ColorItemShape.SQUARE)
@@ -148,7 +150,8 @@ public class ColorPickerDialogsFragment extends Fragment {
                         defaultColor = color;
                         tabLayout.setBackgroundColor(color);
                     }
-                });
+                })
+                .build();
 
 //        Some customizations can be done in below ways.
 
