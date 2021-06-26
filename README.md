@@ -11,6 +11,7 @@
   <a href="https://mrudultora.github.io/libraries/ColorPicker/javadoc/colorpicker-javadoc.html"><img alt="Javadoc" src="https://mrudultora.github.io/Github-badges/javadoc-colorpicker-badge.svg"/></a>
 	
 </div>
+
 ## Highlights
 
 • ColorPicker Popup (comes with ColorPickerView) to pick colors using Hue, Saturation and Value (HSV).<br>
