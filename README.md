@@ -9,7 +9,7 @@
    <img src="https://img.shields.io/badge/API-21%2B-darkcyan.svg" alt="API" /> 
    <span class="badge-paypal"><a href="https://www.paypal.com/paypalme/mrudultora" title="Donate to this project using Paypal"><img src="https://img.shields.io/badge/paypal-donate-purple.svg" alt="Donate" /></a></span>
   <a href="https://mrudultora.github.io/libraries/ColorPicker/javadoc/colorpicker-javadoc.html"><img alt="Javadoc" src="https://mrudultora.github.io/Github-badges/javadoc-colorpicker-badge.svg"/></a>
-	
+  [![](https://jitpack.io/v/mrudultora/Colorpicker/month.svg)](https://jitpack.io/#mrudultora/Colorpicker)
 </div>
 
 ## Highlights
