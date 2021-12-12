@@ -243,6 +243,10 @@ For more info regarding these methods, have a look at the <a href="https://mrudu
 ## Let us Know
 It would be great if any of your apps uses this library. Please, do let me know about it on **mrudultora@gmail.com**. The list of the apps using this library would be updated soon. Your views, suggestions and feedbacks are welcomed. Also, feel free to open issues or contributing to this library.
 
+## Apps Using this Library
+1. Device Info : View Hardware and Software Info (<b>50K+ Downloads</b> on Google Play Store) (<a href="https://play.google.com/store/apps/details?id=com.toralabs.deviceinfo">Visit</a>)
+2. Chemistry Notes Offline (<b>100K+ Downloads</b> on Google Play Store) (<a href="https://play.google.com/store/apps/details?id=com.toralabs.chemnotes">Visit</a>)
+
 ## Find this library useful? :heart:
 Support it by starring this repository and joining [stargazers](https://github.com/mrudultora/Colorpicker/stargazers) for this repository. :star: <br>
 And __[follow](https://github.com/mrudultora)__ me for more such libraries! 🤩
