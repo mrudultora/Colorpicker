@@ -65,6 +65,7 @@ public class ColorPickerPopUp extends View implements ViewTreeObserver.OnGlobalL
     private int selectedColor = Integer.MAX_VALUE;
     private int alpha = 255;
     private float[] currentColorsHSV = new float[]{1f, 1f, 1f};
+    private IPreviewCallback previewCallback;
 
     public interface OnPickColorListener {
         void onColorPicked(int color);
@@ -178,7 +179,9 @@ public class ColorPickerPopUp extends View implements ViewTreeObserver.OnGlobalL
             setSaturation(1f / colorPickerView.getMeasuredWidth() * x);
             setValue(1f - (1f / colorPickerView.getMeasuredHeight() * y));
             moveCursorColorPicker();
+            int color = getCurrentColor();
             viewNewColor.setBackgroundColor(getCurrentColor());
+            preview(color);
             return true;
         } else if (hueImageView != null && view == hueImageView && isRequiredMotionEvent(motionEvent)) {
             float y = motionEvent.getY();
@@ -195,7 +198,9 @@ public class ColorPickerPopUp extends View implements ViewTreeObserver.OnGlobalL
             setHue(hue);
 
             colorPickerView.setHue(getHue());
+            int color = getCurrentColor();
             viewNewColor.setBackgroundColor(getCurrentColor());
+            preview(color);
             moveCursorHue();
             updateAlphaOverlay();
             return true;
@@ -213,6 +218,7 @@ public class ColorPickerPopUp extends View implements ViewTreeObserver.OnGlobalL
             selectedColor = this.alpha << 24 | getCurrentColor() & 0x00FFFFFF;
             moveCursorAlpha();
             viewNewColor.setBackgroundColor(selectedColor);
+            preview(selectedColor);
             return true;
         }
         return false;
@@ -407,6 +413,20 @@ public class ColorPickerPopUp extends View implements ViewTreeObserver.OnGlobalL
         return this;
     }
 
+    /**
+     * A callback which can do stuff, like preview the color in the real object
+     * @param previewCallback
+     */
+    public ColorPickerPopUp setPreviewCallback(IPreviewCallback previewCallback) {
+        this.previewCallback = previewCallback;
+        return this;
+    }
+
+    private void preview(int color) {
+        if (previewCallback != null) {
+            previewCallback.preview(color);
+        }
+    }
     /**
      * Sets whether to show Alpha Channel or not.
      * Default value is true.
